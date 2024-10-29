@@ -12,6 +12,7 @@ import pandas as pd
 import json
 import numpy as np
 from parse_solidity_event import parse_solidity_event
+from tqdm import tqdm
 import sys
 
 logger.setup_logging()
@@ -126,7 +127,7 @@ else:
 # fromblock    = 18006105
 # recent_block = 18006110
 
-for ii, step in enumerate(np.arange(fromblock, recent_block, REQ_SIZE)):
+for ii, step in enumerate(tqdm(np.arange(fromblock, recent_block, REQ_SIZE), desc="Processing blocks")):
 
     toblock = min(step + REQ_SIZE, recent_block)
     #get logs
