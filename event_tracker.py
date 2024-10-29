@@ -1,7 +1,6 @@
 """This script connects to an Ethereum node and
 find all the occurences of a specific event.
 """
-from config import *
 import argparse
 from web3 import Web3
 import logger, logging, os
@@ -60,6 +59,10 @@ def parse_arguments():
 
 # TK opptimally set
 REQ_SIZE=10000
+# load path variables
+ABI = os.getenv('ABI')
+OUTPUT = os.getenv('OUTPUT')
+EVENT = os.getenv('EVENT')
 
 # Parse arguments
 config = parse_arguments()

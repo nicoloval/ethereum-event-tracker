@@ -1,11 +1,9 @@
 # Configuration
-You have to configuration files:
-- `config.py`
-- `.env`
+You have one configuration file: `.env` which tracks:
+- the global vairbales to define the abi and events locations are defined, as well as the output folder.
+- the chain id and the rpc connection are defined, as additional information the user may want to keep secret (e.g. the OPENAI api key). 
 
-In `config.py` the global vairbales to define the abi and events locations are defined, as well as the output folder.
-
-In `.env` the chain id and the rpc connection are defined, as additional information the user may want to keep secret (e.g. the OPENAI api key). An example file is provided in `.env.example`.
+An example file is provided in `.env.example`.
 
 
 # How to Use it
