@@ -1,0 +1,3 @@
+- abi json file, in folder `/contracts`. E.g. `stETH-abi.json`
+- contract address. E.g. `stETH_address="0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84"`
+- event to track in .sol format, in folder `/events`

@@ -57,7 +57,7 @@ event_abi_map = log_decoder.generate_event_abi_map(contract_abi)
 
 # initialize output csv
 output_path = './output/stETH_Transfer.csv' 
-if not os.path.exists(f'{history_path}'):
+if not os.path.exists(f'{output_path}'):
     os.makedirs('./output', exist_ok=True)
     logger.info(f'no previous output file exists')
     fromblock = 11000000
