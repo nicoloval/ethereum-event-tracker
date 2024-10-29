@@ -64,7 +64,10 @@ contract_abi = json.load(f)
 contract = w3.eth.contract(address=os.getenv('stETH_address'), abi=contract_abi)
 event_abi_map = log_decoder.generate_event_abi_map(contract_abi)
 
-for ii, step in enumerate(np.arange(fromblock,recent_block,REQ_SIZE)):
+# Initialize an empty DataFrame to store the logs
+history = pd.DataFrame(columns=['blockNumber', 'from', 'to', 'value'])
+
+for ii, step in enumerate(np.arange(fromblock, recent_block, REQ_SIZE)):
 
     toblock = min(step + REQ_SIZE, recent_block)
     #get logs
@@ -92,12 +95,13 @@ for ii, step in enumerate(np.arange(fromblock,recent_block,REQ_SIZE)):
             work['blockNumber']=decoded_log['blockNumber']
             work['from']=decoded_log['args']['from']
             work['to']=decoded_log['args']['to']
-            work['value']=decoded_log['args']['value'] # in wei
-            
-    # # saving to csv
-    # success_row = pd.DataFrame.from_dict(work, orient='index').T
-    # history = pd.concat([history, success_row])
-    # #save
-    # history.to_csv('./history/history.csv', index=False)
+            work['value'] = decoded_log['args']['value']  # in wei
+
+            # Append the work dictionary as a new row to the DataFrame
+            success_row = pd.DataFrame([work])
+            history = pd.concat([history, success_row], ignore_index=True)
+
+    # Save the DataFrame to a CSV file
+    history.to_csv('./history/history.csv', index=False, mode='a', header=not os.path.exists('./history/history.csv'))
 
 logger.info(f'Listener job finished.')
