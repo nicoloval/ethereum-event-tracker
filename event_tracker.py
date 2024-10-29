@@ -29,9 +29,9 @@ class EventTrackerConfig:
         self.recent_block = recent_block
         self.append = append
         # Configure the paths to the files form user information
-        self.contract_abi_path = f"./abi/{self.contract_name}.json"
-        self.event_solidity_path = f"./event/{self.contract_name}-{self.event_name}.sol"
-        self.output_path = f"./output/{self.contract_name}-{self.event_name}.csv"
+        self.contract_abi_path = f"./{ABI}/{self.contract_name}.json"
+        self.event_solidity_path = f"./{EVENT}/{self.contract_name}-{self.event_name}.sol"
+        self.output_path = f"./{OUTPUT}/{self.contract_name}-{self.event_name}.csv"
 
 
 import argparse
@@ -104,7 +104,7 @@ output = pd.DataFrame(columns=['blockNumber'] + event['fields'])
 
 # initialize output csv
 if not os.path.exists(f'{config.output_path}'):
-    os.makedirs('./output', exist_ok=True)
+    os.makedirs(f'{OUTPUT}', exist_ok=True)
     logger.info(f'No previous output file exists')
 else:
     if config.append:

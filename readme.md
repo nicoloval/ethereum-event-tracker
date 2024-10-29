@@ -1,3 +1,15 @@
+# Configuration
+You have to configuration files:
+- `config.py`
+- `.env`
+
+In `config.py` the global vairbales to define the abi and events locations are defined, as well as the output folder.
+
+In `.env` the chain id and the rpc connection are defined, as additional information the user may want to keep secret (e.g. the OPENAI api key). An example file is provided in `.env.example`.
+
+
+# How to Use it
+
 First, you need to save the following files in the correct directory:
 - the abi json file of the contract goes in the folder `./abi/`, the file name is the contract name. 
     e.g.
