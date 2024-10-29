@@ -32,7 +32,6 @@ class EventTrackerConfig:
         # Configure the paths to the files form user information
         self.contract_abi_path = f"./{ABI}/{self.contract_name}.json"
         self.event_solidity_path = f"./{EVENT}/{self.contract_name}-{self.event_name}.sol"
-        self.output_path = f"./{OUTPUT}/{self.contract_name}-{self.event_name}.csv"
 
 
 import argparse
@@ -117,7 +116,7 @@ if config.append:
     else:
         logger.info(f'No previous output file exists, starting from block {fromblock}')
 else:
-    if os.path.exists(config.output_path):
+    if os.path.exists(OUTPUT):
         logger.info(f'Overwriting previous existing output')
     else:
         os.makedirs(OUTPUT, exist_ok=True)
