@@ -167,20 +167,24 @@ for ii, step in enumerate(tqdm(np.arange(fromblock, recent_block, REQ_SIZE), des
             success_row = pd.DataFrame([work])
             output = pd.concat([output, success_row], ignore_index=True)
 
-    # Save the DataFrame to a parquet file every REQ_SIZE blocks
-    output_file = f"{OUTPUT}/{config.contract_name}-{config.event_name}-{step}-{toblock}.parquet"
-    # convert columns to string to avoid errors from numbers larger than max
+    # Determine the current output file based on the current 500,000 block range
+    current_file_index = (step // 500000) * 500000
+    output_file = f"{OUTPUT}/{config.contract_name}-{config.event_name}-{current_file_index}.parquet"
+
+    # Append the DataFrame to the current parquet file
+    if os.path.exists(output_file):
+        existing_table = pq.read_table(output_file)
+        existing_df = existing_table.to_pandas()
+        output = pd.concat([existing_df, output], ignore_index=True)
+
+    # Convert columns to string to avoid errors from numbers larger than max
     output = output.astype(str)
     table = pa.Table.from_pandas(output)
     pq.write_table(table, output_file)
-    logger.info(f'Saved output to {output_file}')
+    logger.info(f'Updated output in {output_file}')
 
-    # Use a new parquet file every 500,000 blocks
+    # Reset the DataFrame every 500,000 blocks
     if (ii + 1) % (500000 // REQ_SIZE) == 0:
-        output = pd.DataFrame(columns=['blockNumber'] + event['fields'])  # Reset the DataFrame
-        table = pa.Table.from_pandas(output)
-        pq.write_table(table, output_file)
-        logger.info(f'Saved output to {output_file}')
         output = pd.DataFrame(columns=['blockNumber'] + event['fields'])  # Reset the DataFrame
 
 logger.info(f'Event Tracker job finished.')
