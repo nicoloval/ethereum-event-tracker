@@ -9,6 +9,8 @@ import log_filters
 from dotenv import load_dotenv
 import pandas as pd
 import json
+import pyarrow as pa
+import pyarrow.parquet as pq
 import numpy as np
 from parse_solidity_event import parse_solidity_event
 from tqdm import tqdm
@@ -167,14 +169,16 @@ for ii, step in enumerate(tqdm(np.arange(fromblock, recent_block, REQ_SIZE), des
             output = pd.concat([output, success_row], ignore_index=True)
 
     # Save the DataFrame to a CSV file every REQ_SIZE blocks
-    output_file = f"{OUTPUT}/{config.contract_name}-{config.event_name}-{step}-{toblock}.csv"
-    output.to_csv(output_file, index=False, mode='a', header=not os.path.exists(output_file))
+    output_file = f"{OUTPUT}/{config.contract_name}-{config.event_name}-{step}-{toblock}.parquet"
+    table = pa.Table.from_pandas(output)
+    pq.write_table(table, output_file)
     logger.info(f'Saved output to {output_file}')
 
     # Use a new CSV file every 500,000 blocks
     if (ii + 1) % (500000 // REQ_SIZE) == 0:
         output = pd.DataFrame(columns=['blockNumber'] + event['fields'])  # Reset the DataFrame
-        output.to_csv(output_file, index=False, mode='w', header=True)
+        table = pa.Table.from_pandas(output)
+        pq.write_table(table, output_file)
         logger.info(f'Saved output to {output_file}')
         output = pd.DataFrame(columns=['blockNumber'] + event['fields'])  # Reset the DataFrame
 
