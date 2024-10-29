@@ -123,7 +123,7 @@ else:
 # toIsContract                                               1
 # value  
 # # setting for the debug                                   420004762656680918
-# fromblock = 18006105
+# fromblock    = 18006105
 # recent_block = 18006110
 
 for ii, step in enumerate(np.arange(fromblock, recent_block, REQ_SIZE)):
