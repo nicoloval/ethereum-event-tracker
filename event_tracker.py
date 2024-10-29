@@ -99,21 +99,23 @@ event_abi_map = log_decoder.generate_event_abi_map(contract_abi)
 # event .sol information parsing
 event = parse_solidity_event(config.event_solidity_path)
 
-# Initialize an empty DataFrame to store the event occurences
+# Initialize an empty DataFrame to store the event occurrences
 output = pd.DataFrame(columns=['blockNumber'] + event['fields'])
 
-# initialize output csv
-if not os.path.exists(f'{config.output_path}'):
-    os.makedirs(f'{OUTPUT}', exist_ok=True)
-    logger.info(f'No previous output file exists')
-else:
-    if config.append:
-        logger.info(f'Appending to previous existing output')   
-        history = pd.read_csv(f'{config.output_path}')
-        fromblock = history.iloc[-1]['blockNumber']+1        
+# Check existing files to determine the starting block if append is True
+if config.append:
+    existing_files = [f for f in os.listdir(OUTPUT) if f.startswith(f"{config.contract_name}-{config.event_name}")]
+    if existing_files:
+        latest_file = max(existing_files, key=lambda x: int(x.split('-')[-2]))
+        fromblock = int(latest_file.split('-')[-1].split('.')[0]) + 1
+        logger.info(f'Resuming from block {fromblock} based on existing files.')
     else:
-        output.to_csv(config.output_path, index=False, mode='w', header=True)
-        logger.info(f'Overwriting previous exisiting output')
+        logger.info(f'No previous output file exists, starting from block {fromblock}')
+else:
+    if os.path.exists(config.output_path):
+        logger.info(f'Overwriting previous existing output')
+    else:
+        os.makedirs(OUTPUT, exist_ok=True)
 
 
 # DEBUG: this Transfer happened
@@ -161,7 +163,11 @@ for ii, step in enumerate(tqdm(np.arange(fromblock, recent_block, REQ_SIZE), des
             success_row = pd.DataFrame([work])
             output = pd.concat([output, success_row], ignore_index=True)
 
-    # Save the DataFrame to a CSV file
-    output.to_csv(config.output_path, index=False, mode='a', header=not os.path.exists(config.output_path))
+    # Save the DataFrame to a CSV file every 500,000 blocks
+    if (ii + 1) % (500000 // REQ_SIZE) == 0 or step + REQ_SIZE >= recent_block:
+        output_file = f"{OUTPUT}/{config.contract_name}-{config.event_name}-{step}-{toblock}.csv"
+        output.to_csv(output_file, index=False, mode='w', header=True)
+        logger.info(f'Saved output to {output_file}')
+        output = pd.DataFrame(columns=['blockNumber'] + event['fields'])  # Reset the DataFrame
 
 logger.info(f'Event Tracker job finished.')
