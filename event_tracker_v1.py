@@ -30,8 +30,8 @@ def parse_arguments():
     parser.add_argument('--contract_abi_path', type=str, required=True, help='Path to the contract ABI')
     parser.add_argument('--contract', type=str, required=True, help='Contract address')
     parser.add_argument('--event_solidity_path', type=str, required=True, help='Path to the event solidity file')
-    parser.add_argument('--from_block', type=int, required=True, help='Starting block number')
-    parser.add_argument('--recent_block', type=int, required=True, help='Stopping block number')
+    parser.add_argument('--from_block', type=int, default=None, help='Starting block number (optional)')
+    parser.add_argument('--recent_block', type=int, default=None, help='Stopping block number (optional)')
     args = parser.parse_args()
     return EventTrackerConfig(args.contract_abi_path, args.contract, args.event_solidity_path, args.from_block, args.recent_block)
 REQ_SIZE=10000
