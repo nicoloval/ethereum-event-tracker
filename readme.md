@@ -1,3 +1,10 @@
+# Requirements
+
+Use the following command to install all the packages from `requirements.txt`:
+```
+pip install -r requirements.txt
+```
+
 # Configuration
 You have one configuration file: `.env` which tracks:
 - the global vairbales to define the abi and events locations are defined, as well as the output folder.
