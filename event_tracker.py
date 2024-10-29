@@ -163,9 +163,14 @@ for ii, step in enumerate(tqdm(np.arange(fromblock, recent_block, REQ_SIZE), des
             success_row = pd.DataFrame([work])
             output = pd.concat([output, success_row], ignore_index=True)
 
-    # Save the DataFrame to a CSV file every 500,000 blocks
-    if (ii + 1) % (500000 // REQ_SIZE) == 0 or step + REQ_SIZE >= recent_block:
-        output_file = f"{OUTPUT}/{config.contract_name}-{config.event_name}-{step}-{toblock}.csv"
+    # Save the DataFrame to a CSV file every REQ_SIZE blocks
+    output_file = f"{OUTPUT}/{config.contract_name}-{config.event_name}-{step}-{toblock}.csv"
+    output.to_csv(output_file, index=False, mode='a', header=not os.path.exists(output_file))
+    logger.info(f'Saved output to {output_file}')
+
+    # Use a new CSV file every 500,000 blocks
+    if (ii + 1) % (500000 // REQ_SIZE) == 0:
+        output = pd.DataFrame(columns=['blockNumber'] + event['fields'])  # Reset the DataFrame
         output.to_csv(output_file, index=False, mode='w', header=True)
         logger.info(f'Saved output to {output_file}')
         output = pd.DataFrame(columns=['blockNumber'] + event['fields'])  # Reset the DataFrame
