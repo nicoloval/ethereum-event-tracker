@@ -65,7 +65,7 @@ contract = w3.eth.contract(address=os.getenv('stETH_address'), abi=contract_abi)
 event_abi_map = log_decoder.generate_event_abi_map(contract_abi)
 
 # Initialize an empty DataFrame to store the logs
-history = pd.DataFrame(columns=['blockNumber', 'from', 'to', 'value'])
+output = pd.DataFrame(columns=['blockNumber', 'from', 'to', 'value'])
 
 for ii, step in enumerate(np.arange(fromblock, recent_block, REQ_SIZE)):
 
@@ -99,9 +99,9 @@ for ii, step in enumerate(np.arange(fromblock, recent_block, REQ_SIZE)):
 
             # Append the work dictionary as a new row to the DataFrame
             success_row = pd.DataFrame([work])
-            history = pd.concat([history, success_row], ignore_index=True)
+            output = pd.concat([output, success_row], ignore_index=True)
 
     # Save the DataFrame to a CSV file
-    history.to_csv('./history/history.csv', index=False, mode='a', header=not os.path.exists('./history/history.csv'))
+    output.to_csv('./output/stETH_Transfer.csv', index=False, mode='a', header=not os.path.exists('./output/stETH_Transfer.csv'))
 
-logger.info(f'Listener job finished.')
+logger.info(f'Event Tracker job finished.')
