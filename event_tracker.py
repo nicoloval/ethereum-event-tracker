@@ -168,10 +168,11 @@ for ii, step in enumerate(tqdm(np.arange(fromblock, recent_block, REQ_SIZE), des
             output = pd.concat([output, success_row], ignore_index=True)
 
     # Determine the current output file based on the current 500,000 block range
-    current_file_index = (step // 500000) * 500000
-    output_file = f"{OUTPUT}/{config.contract_name}-{config.event_name}-{current_file_index}.parquet"
+    current_file_start = (step // 500000) * 500000
+    current_file_end = min(current_file_start + 500000, recent_block)
+    output_file = f"{OUTPUT}/{config.contract_name}-{config.event_name}-{current_file_start}-{current_file_end}.parquet"
 
-    # Append the DataFrame to the current parquet file
+    # Append the DataFrame to the current parquet file every REQ_SIZE steps
     if os.path.exists(output_file):
         existing_table = pq.read_table(output_file)
         existing_df = existing_table.to_pandas()
@@ -184,7 +185,7 @@ for ii, step in enumerate(tqdm(np.arange(fromblock, recent_block, REQ_SIZE), des
     logger.info(f'Updated output in {output_file}')
 
     # Reset the DataFrame every 500,000 blocks
-    if (ii + 1) % (500000 // REQ_SIZE) == 0:
+    if (step + REQ_SIZE) % 500000 == 0:
         output = pd.DataFrame(columns=['blockNumber'] + event['fields'])  # Reset the DataFrame
 
 logger.info(f'Event Tracker job finished.')
