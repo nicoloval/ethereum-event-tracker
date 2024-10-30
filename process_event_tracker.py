@@ -126,10 +126,10 @@ for step in np.arange(fromblock, recent_block, REQ_SIZE):
             success_row = pd.DataFrame([work])
             output = pd.concat([output, success_row], ignore_index=True)
 
-output = output.astype(str)
-table = pa.Table.from_pandas(output)
-pq.write_table(table, output_file)
-logger.info(f'Output written to {output_file}')
-output = pd.DataFrame(columns=['blockNumber'] + event['fields'])  # Reset the DataFrame
+    output = output.astype(str)
+    table = pa.Table.from_pandas(output)
+    pq.write_table(table, output_file)
+    logger.info(f'Output written to {output_file}')
+    output = pd.DataFrame(columns=['blockNumber'] + event['fields'])  # Reset the DataFrame
 
 logger.info(f'Event Tracker job finished.')
