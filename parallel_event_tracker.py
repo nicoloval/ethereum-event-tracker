@@ -39,9 +39,16 @@ args = parse_arguments()
 start_block = args.from_block if args.from_block is not None else 0
 end_block = args.recent_block if args.recent_block is not None else latest_block
 
+# Adjust the first batch if start_block is not a multiple of BLOCK_RANGE_SIZE
+first_batch_end = ((start_block // BLOCK_RANGE_SIZE) + 1) * BLOCK_RANGE_SIZE if start_block % BLOCK_RANGE_SIZE != 0 else start_block + BLOCK_RANGE_SIZE
+
 # Launch subprocesses for each block range
 processes = []
 for current_start_block in range(start_block, end_block, BLOCK_RANGE_SIZE):
+    if current_start_block == start_block and start_block % BLOCK_RANGE_SIZE != 0:
+        current_end_block = min(first_batch_end, end_block)
+    else:
+        current_end_block = min(current_start_block + BLOCK_RANGE_SIZE, end_block)
     current_end_block = min(current_start_block + BLOCK_RANGE_SIZE, end_block)
     cmd = [
         'python', 'event_tracker.py',
