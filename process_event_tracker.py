@@ -95,8 +95,10 @@ output_file = f"{OUTPUT}/{config.contract_name}-{config.event_name}-{fromblock}-
 if config.append and os.path.exists(output_file):
     existing_table = pq.read_table(output_file)
     existing_df = existing_table.to_pandas()
+    last_block_number = existing_df['blockNumber'].astype(int).max()
+    fromblock = last_block_number + 1
     output = pd.concat([existing_df, output], ignore_index=True)
-    logger.info(f'Appending to existing file {output_file}')
+    logger.info(f'Appending to existing file {output_file}, starting from block {fromblock}')
 else:
     logger.info(f'Creating new output file {output_file}')
 
