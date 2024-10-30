@@ -101,6 +101,8 @@ if config.append and os.path.exists(output_file):
     logger.info(f'Appending to existing file {output_file}, starting from block {fromblock}')
 else:
     logger.info(f'Creating new output file {output_file}')
+else:
+    logger.info(f'Creating new output file {output_file}')
 
 for step in np.arange(fromblock, recent_block, REQ_SIZE):
     toblock = min(step + REQ_SIZE, recent_block)
