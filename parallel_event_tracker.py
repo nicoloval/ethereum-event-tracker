@@ -51,7 +51,7 @@ for current_start_block in range(start_block, end_block, BLOCK_RANGE_SIZE):
         current_end_block = min(current_start_block + BLOCK_RANGE_SIZE, end_block)
     current_end_block = min(current_start_block + BLOCK_RANGE_SIZE, end_block)
     cmd = [
-        'python', 'event_tracker.py',
+        'python', 'process_event_tracker.py',
         '-n', args.contract_name,
         '-a', args.contract_address,
         '-e', args.event_name,
