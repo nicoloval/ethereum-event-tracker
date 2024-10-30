@@ -30,6 +30,7 @@ def parse_arguments():
     parser.add_argument('-f', '--from-block', type=int, default=None, help='Starting block number (optional)')
     parser.add_argument('-r', '--recent-block', type=int, default=None, help='Stopping block number (optional)')
     parser.add_argument('-p', '--append', action="store_true", help='Append to existing output (optional)')
+    parser.add_argument('-c', '--cores', type=int, default=4, help='Number of cores to allocate to subprocesses (optional)')
 
     return parser.parse_args()
 
@@ -62,11 +63,16 @@ for current_start_block in range(start_block, end_block, BLOCK_RANGE_SIZE):
     if args.append:
         cmd.append('-p')
 
-    process = subprocess.Popen(cmd)
+    process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     processes.append(process)
 
-# Wait for all processes to complete
-for process in processes:
-    process.wait()
+# Wait for all processes to complete, respecting the core limit
+while processes:
+    for process in processes:
+        if process.poll() is not None:  # Process has finished
+            processes.remove(process)
+            break
+    if len(processes) >= args.cores:
+        processes[0].wait()  # Wait for the first process to finish if core limit is reached
 
 print("All event tracking processes have completed.")
