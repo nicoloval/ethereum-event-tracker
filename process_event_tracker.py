@@ -126,19 +126,17 @@ for step in np.arange(fromblock, recent_block, REQ_SIZE):
             success_row = pd.DataFrame([work])
             output = pd.concat([output, success_row], ignore_index=True)
 
-    # Append the DataFrame to the current parquet file every REQ_SIZE steps
-    if os.path.exists(output_file):
-        existing_table = pq.read_table(output_file)
-        existing_df = existing_table.to_pandas()
-        output = pd.concat([existing_df, output], ignore_index=True)
 
-    # Convert columns to string to avoid errors from numbers larger than max
-    output = output.astype(str)
-    table = pa.Table.from_pandas(output)
-    pq.write_table(table, output_file)
-    logger.info(f'Updated output in {output_file}')
+# Write the DataFrame to the output file at the end
+if os.path.exists(output_file):
+    existing_table = pq.read_table(output_file)
+    existing_df = existing_table.to_pandas()
+    output = pd.concat([existing_df, output], ignore_index=True)
 
-    # Reset the DataFrame every REQ_SIZE steps
-    output = pd.DataFrame(columns=['blockNumber'] + event['fields'])  # Reset the DataFrame
+# Convert columns to string to avoid errors from numbers larger than max
+output = output.astype(str)
+table = pa.Table.from_pandas(output)
+pq.write_table(table, output_file)
+logger.info(f'Final output written to {output_file}')
 
 logger.info(f'Event Tracker job finished.')
