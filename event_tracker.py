@@ -30,8 +30,8 @@ class EventTrackerConfig:
         self.recent_block = recent_block
         self.append = append
         # Configure the paths to the files form user information
-        self.contract_abi_path = f"./{ABI}/{self.contract_name}.json"
-        self.event_solidity_path = f"./{EVENT}/{self.contract_name}-{self.event_name}.sol"
+        self.contract_abi_path = f"{ABI}/{self.contract_name}.json"
+        self.event_solidity_path = f"{EVENT}/{self.contract_name}-{self.event_name}.sol"
 
 
 import argparse
