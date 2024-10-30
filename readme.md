@@ -39,6 +39,29 @@ python event_tracker.py -contract-name stETH --contract-address 0xae7ab96520DE3A
     ```
     python event_tracker.py --contract-name stETH --contract-address 0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84 --event-name Transfer --from-block 18006105 --recent-block 18006110
     ```
-- an additional boolean option can be set to firce the wscript to append to an existing output file. The script will automatically start form the last block recorded on the output.
+- an additional boolean option can be set to force the script to append to an existing output file. The script will automatically start from the last block recorded on the output.
+
+# Using parallel_event_tracker.py
+
+The `parallel_event_tracker.py` script allows you to track events in parallel by dividing the block range into smaller segments and processing them concurrently. This can significantly speed up the event tracking process.
+
+To use the script, run the following command:
+
+```
+python parallel_event_tracker.py --contract-name stETH --contract-address 0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84 --event-name Transfer
+```
+
+- The `--contract-name`, `--contract-address`, and `--event-name` arguments are required, similar to `event_tracker.py`.
+- You can also specify the block range using `--from-block` and `--recent-block` to limit the search range.
+- Use the `--append` flag to append to existing output files.
+- The `--cores` argument allows you to specify the number of CPU cores to allocate for the subprocesses, which controls the level of parallelism.
+
+Example with additional arguments:
+
+```
+python parallel_event_tracker.py --contract-name stETH --contract-address 0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84 --event-name Transfer --from-block 18006105 --recent-block 18006110 --cores 4
+```
+
+This command will track the `Transfer` event from block `18006105` to `18006110` using up to 4 CPU cores for parallel processing.
 
 The output is saved in the folder `./output`, in a `.parquet` files following the naming convention `{OUTPUT}/{config.contract_name}-{config.event_name}-{step}-{toblock}.parquet`. A file is created every 500,000 blocks.
