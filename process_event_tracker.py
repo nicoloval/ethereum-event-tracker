@@ -130,5 +130,6 @@ output = output.astype(str)
 table = pa.Table.from_pandas(output)
 pq.write_table(table, output_file)
 logger.info(f'Output written to {output_file}')
+output = pd.DataFrame(columns=['blockNumber'] + event['fields'])  # Reset the DataFrame
 
 logger.info(f'Event Tracker job finished.')
