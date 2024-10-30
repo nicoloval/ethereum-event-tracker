@@ -35,10 +35,14 @@ def parse_arguments():
 
 args = parse_arguments()
 
+# Determine the starting and ending blocks
+start_block = args.from_block if args.from_block is not None else 0
+end_block = args.recent_block if args.recent_block is not None else latest_block
+
 # Launch subprocesses for each block range
 processes = []
-for start_block in range(0, latest_block, BLOCK_RANGE_SIZE):
-    end_block = min(start_block + BLOCK_RANGE_SIZE, latest_block)
+for current_start_block in range(start_block, end_block, BLOCK_RANGE_SIZE):
+    current_end_block = min(current_start_block + BLOCK_RANGE_SIZE, end_block)
     cmd = [
         'python', 'event_tracker.py',
         '-n', args.contract_name,
