@@ -48,8 +48,8 @@ for current_start_block in range(start_block, end_block, BLOCK_RANGE_SIZE):
         '-n', args.contract_name,
         '-a', args.contract_address,
         '-e', args.event_name,
-        '-f', str(start_block),
-        '-r', str(end_block)
+        '-f', str(current_start_block),
+        '-r', str(current_end_block)
     ]
 
     if args.append:
