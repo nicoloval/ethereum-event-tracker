@@ -27,10 +27,9 @@ def run_event_tracker(from_block, to_block):
         'python', 'event_tracker.py',
         '-n', 'stETH',  # Example contract name
         '-a', '0x1234567890abcdef1234567890abcdef12345678',  # Example contract address
-        '-e', 'Transfer',  # Example event name
+        '-e', 'TransferShares',  # Example event name
         '-f', str(from_block),
-        '-r', str(to_block),
-        '-p'
+        '-r', str(to_block)
     ])
 
 # Launch subprocesses for each block range
