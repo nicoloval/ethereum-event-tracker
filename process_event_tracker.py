@@ -4,7 +4,7 @@ It is meant to run as a process cmd managed by the script parallel_event_tracker
 """
 import argparse
 from web3 import Web3
-import logger, logging, os
+import os
 import log_decoder
 import log_filters
 from dotenv import load_dotenv
@@ -15,8 +15,6 @@ import pyarrow.parquet as pq
 import numpy as np
 from parse_solidity_event import parse_solidity_event
 
-logger.setup_logging()
-logger = logging.getLogger()
 
 load_dotenv('.env')
 
@@ -97,9 +95,7 @@ if config.append and os.path.exists(output_file):
     existing_df = existing_table.to_pandas()
     last_block_number = existing_df['blockNumber'].astype(int).max()
     fromblock = last_block_number + 1
-    logger.info(f'Appending to existing file {output_file}, starting from block {fromblock}')
 else:
-    logger.info(f'Creating new output file {output_file}')
 
 # list to save all output dicts
 output_list = []
@@ -117,7 +113,6 @@ for step in np.arange(fromblock, recent_block, REQ_SIZE):
     logs = get_logs_try(w3, filter_params)
 
     if len(logs) > 0:
-        logger.info(f'found {len(logs)} events. Processing...')
 
         for log in logs:
             decoded_log = log_decoder.decode_log(log, event_abi_map, contract)
@@ -139,6 +134,4 @@ for step in np.arange(fromblock, recent_block, REQ_SIZE):
     output = output.astype(str)
     table = pa.Table.from_pandas(output)
     pq.write_table(table, output_file)
-    logger.info(f'Final output written to {output_file}')
 
-logger.info(f'Event Tracker job finished.')
