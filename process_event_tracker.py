@@ -95,7 +95,6 @@ if config.append and os.path.exists(output_file):
     existing_df = existing_table.to_pandas()
     last_block_number = existing_df['blockNumber'].astype(int).max()
     fromblock = last_block_number + 1
-else:
 
 # list to save all output dicts
 output_list = []
