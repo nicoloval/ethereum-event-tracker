@@ -133,6 +133,7 @@ else:
 # fromblock    = 18006105
 # recent_block = 18006110
 
+output_list = []
 for ii, step in enumerate(tqdm(np.arange(fromblock, recent_block, REQ_SIZE), desc="Processing blocks")):
 
     toblock = min(step + REQ_SIZE, recent_block)
@@ -164,9 +165,11 @@ for ii, step in enumerate(tqdm(np.arange(fromblock, recent_block, REQ_SIZE), des
                 work[field] = decoded_log['args'][field]
 
             # Append the work dictionary as a new row to the DataFrame
-            success_row = pd.DataFrame([work])
-            output = pd.concat([output, success_row], ignore_index=True)
+            output_list.append(work)
+            
+            # output = pd.concat([output, success_row], ignore_index=True)
 
+    output = pd.DataFrame(output_list)
     # Determine the current output file based on the current 500,000 block range
     current_file_start = (step // 500000) * 500000
     current_file_end = min(current_file_start + 500000, recent_block)
