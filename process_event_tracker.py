@@ -13,7 +13,6 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import numpy as np
 from parse_solidity_event import parse_solidity_event
-import sys
 
 logger.setup_logging()
 logger = logging.getLogger()
@@ -88,7 +87,7 @@ event_abi_map = log_decoder.generate_event_abi_map(contract_abi)
 
 event = parse_solidity_event(config.event_solidity_path)
 
-output = pd.DataFrame(columns=['blockNumber'] + event['fields'])
+# output = pd.DataFrame(columns=['blockNumber'] + event['fields'])
 
 output_file = f"{OUTPUT}/{config.contract_name}-{config.event_name}-{fromblock}-{recent_block}.parquet"
 
@@ -97,10 +96,12 @@ if config.append and os.path.exists(output_file):
     existing_df = existing_table.to_pandas()
     last_block_number = existing_df['blockNumber'].astype(int).max()
     fromblock = last_block_number + 1
-    output = pd.concat([existing_df, output], ignore_index=True)
     logger.info(f'Appending to existing file {output_file}, starting from block {fromblock}')
 else:
     logger.info(f'Creating new output file {output_file}')
+
+# list to save all output dicts
+output_list = []
 
 for step in np.arange(fromblock, recent_block, REQ_SIZE):
     toblock = min(step + REQ_SIZE, recent_block)
@@ -122,21 +123,21 @@ for step in np.arange(fromblock, recent_block, REQ_SIZE):
             work = {'blockNumber': decoded_log['blockNumber']}
             for field in event['fields']:
                 work[field] = decoded_log['args'][field]
+            
+            output_list.append(work)
 
-            success_row = pd.DataFrame([work])
-            output = pd.concat([output, success_row], ignore_index=True)
+    # output dataframe out of the list of events stored as dicts
+    output = pd.DataFrame(output_list)
+    # Write the DataFrame to the output file at the end
+    if os.path.exists(output_file):
+        existing_table = pq.read_table(output_file)
+        existing_df = existing_table.to_pandas()
+        output = pd.concat([existing_df, output], ignore_index=True)
 
-
-# Write the DataFrame to the output file at the end
-if os.path.exists(output_file):
-    existing_table = pq.read_table(output_file)
-    existing_df = existing_table.to_pandas()
-    output = pd.concat([existing_df, output], ignore_index=True)
-
-# Convert columns to string to avoid errors from numbers larger than max
-output = output.astype(str)
-table = pa.Table.from_pandas(output)
-pq.write_table(table, output_file)
-logger.info(f'Final output written to {output_file}')
+    # Convert columns to string to avoid errors from numbers larger than max
+    output = output.astype(str)
+    table = pa.Table.from_pandas(output)
+    pq.write_table(table, output_file)
+    logger.info(f'Final output written to {output_file}')
 
 logger.info(f'Event Tracker job finished.')

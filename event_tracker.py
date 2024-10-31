@@ -34,8 +34,6 @@ class EventTrackerConfig:
         self.event_solidity_path = f"{EVENT}/{self.contract_name}-{self.event_name}.sol"
 
 
-import argparse
-
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Event Tracker Configuration")
     parser.add_argument('-n', '--contract-name', type=str, required=True, help='Contract name')
