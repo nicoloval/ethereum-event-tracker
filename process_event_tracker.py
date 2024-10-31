@@ -71,6 +71,7 @@ def get_logs_try(w3, filter_params):
 if config.from_block is None:
     fromblock = 0
 else:
+    pass
     fromblock = config.from_block
 
 if config.recent_block is None:
