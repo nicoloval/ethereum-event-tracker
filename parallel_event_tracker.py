@@ -39,6 +39,7 @@ def parse_arguments():
     return parser.parse_args()
 
 args = parse_arguments()
+logger.info(f"Arguments received: contract_name={args.contract_name}, contract_address={args.contract_address}, event_name={args.event_name}, from_block={args.from_block}, recent_block={args.recent_block}, append={args.append}, cores={args.cores}")
 
 # Determine the starting and ending blocks
 start_block = args.from_block if args.from_block is not None else 0
