@@ -1,5 +1,6 @@
 """This script connects to an Ethereum node and
 finds all the occurrences of a specific event, saving them to a single file.
+It is meant to run as a process cmd managed by the script parallel_event_tracker.py
 """
 import argparse
 from web3 import Web3
