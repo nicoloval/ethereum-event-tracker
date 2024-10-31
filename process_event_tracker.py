@@ -15,7 +15,6 @@ import pyarrow.parquet as pq
 import numpy as np
 from parse_solidity_event import parse_solidity_event
 
-
 load_dotenv('.env')
 
 class EventTrackerConfig:
