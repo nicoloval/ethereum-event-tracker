@@ -3,9 +3,11 @@ import os
 from web3 import Web3
 import argparse
 from dotenv import load_dotenv
-from logger import setup_logging
+from logger import setup_logging, logging
 
 setup_logging()
+logger = logging.getLogger()
+
 load_dotenv('.env')
 
 # Load environment variables
