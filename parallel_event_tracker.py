@@ -18,7 +18,7 @@ EVENT = os.getenv('EVENT')
 
 # Establish a Web3 connection
 w3 = Web3(Web3.HTTPProvider(RPC_ENDPOINT, request_kwargs={'timeout': 40}))
-print(f'Chain connected?: {w3.is_connected()}')
+logger.info(f'Chain connected?: {w3.is_connected()}')
 
 # Define the block range size
 BLOCK_RANGE_SIZE = 500000
@@ -79,4 +79,4 @@ while processes:
     if len(processes) >= args.cores:
         processes[0].wait()  # Wait for the first process to finish if core limit is reached
 
-print("All event tracking processes have completed.")
+logger.info("All event tracking processes have completed.")
