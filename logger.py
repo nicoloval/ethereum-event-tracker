@@ -25,7 +25,7 @@ class StreamToLogger:
 
 def setup_logging():
     os.makedirs('./logs', exist_ok=True)
-    current_time = datetime.now().strftime("%Y-%m-%d")
+    current_time = datetime.now().strftime("%Y%m%d_%H%M")
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s:%(levelname)s:%(name)s:%(message)s',

@@ -49,7 +49,8 @@ def parse_arguments():
         args.append
     )
 
-REQ_SIZE = 10000
+# TK optimal 10000, alchemy is 2k
+REQ_SIZE = 2000
 ABI = os.getenv('ABI')
 OUTPUT = os.getenv('OUTPUT')
 EVENT = os.getenv('EVENT')
