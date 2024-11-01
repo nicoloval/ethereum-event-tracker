@@ -4,7 +4,8 @@ It is meant to run as a process cmd managed by the script parallel_event_tracker
 """
 import argparse
 from web3 import Web3
-import os, logger, logging
+import os
+from logger import setup_logging, logging
 import log_decoder
 import log_filters
 from dotenv import load_dotenv
