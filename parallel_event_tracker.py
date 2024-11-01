@@ -54,6 +54,9 @@ first_batch_end = ((start_block // BLOCK_RANGE_SIZE) + 1) * BLOCK_RANGE_SIZE if 
 processes = []
 active_processes = []
 
+# Initialize process identifier
+process_id = 0
+
 for current_start_block in tqdm(range(start_block, end_block, BLOCK_RANGE_SIZE), desc="Processing blocks"):
     # Calculate current end block
     if current_start_block == start_block and start_block % BLOCK_RANGE_SIZE != 0:
@@ -70,7 +73,11 @@ for current_start_block in tqdm(range(start_block, end_block, BLOCK_RANGE_SIZE),
         '-f', str(current_start_block),
         '-t', str(current_end_block)
     ]
-    if args.append:
+    # Add log file argument
+    log_file = f"{log_dir}/job_{process_id}.log"
+    cmd.extend(['--log-file', log_file])
+
+    if args.append:    
         cmd.append('-p')
 
     # Wait if we've reached the core limit
@@ -86,7 +93,8 @@ for current_start_block in tqdm(range(start_block, end_block, BLOCK_RANGE_SIZE),
     active_processes.append(process)
     processes.append(process)
 
-# Wait for remaining processes to complete
+    # Increment process identifier
+    process_id += 1
 while active_processes:
     for proc in active_processes[:]:  # Create a copy to iterate over
         if proc.poll() is not None:
