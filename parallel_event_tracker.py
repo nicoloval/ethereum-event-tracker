@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from logger import setup_logging, logging
 import time
 
-setup_logging()
+log_dir = setup_logging(main=True)
 logger = logging.getLogger()
 
 load_dotenv('.env')
