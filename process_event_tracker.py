@@ -25,6 +25,7 @@ class EventTrackerConfig:
         self.from_block = from_block
         self.to_block = to_block
         self.append = append
+        self.log_file_path = args.log_file
         # Configure the paths to the files from user information
         self.contract_abi_path = f"{ABI}/{self.contract_name}.json"
         self.event_solidity_path = f"{EVENT}/{self.contract_name}-{self.event_name}.sol"
@@ -37,6 +38,7 @@ def parse_arguments():
     parser.add_argument('-f', '--from-block', type=int, default=None, help='Starting block number (optional)')
     parser.add_argument('-t', '--to-block', type=int, default=None, help='Stopping block number (optional)')
     parser.add_argument('-p', '--append', action="store_true", help='Append to existing output (optional)')
+    parser.add_argument('-l', '--log-file', type=str, required=True, help='Path to the log file')
 
     args = parser.parse_args()
     
@@ -57,16 +59,26 @@ EVENT = os.getenv('EVENT')
 
 config = parse_arguments()
 
+# Set up logging
+setup_logging(main=False, log_file_path=config.log_file_path)
+logger = logging.getLogger()
+logger.info(f"Started event tracking for contract: {config.contract_name}, event: {config.event_name}")
+
 w3 = Web3(
     Web3.HTTPProvider(
         os.getenv('RPC_ENDPOINT'),
         request_kwargs={'timeout': 40}
     )
 )
-print(f'Chain connected?: {w3.is_connected()}')
+logger.info(f'Chain connected?: {w3.is_connected()}')
 
 def get_logs_try(w3, filter_params):
-    logs = w3.eth.get_logs(filter_params)
+    try:
+        logs = w3.eth.get_logs(filter_params)
+        logger.info(f"Retrieved {len(logs)} logs from block {filter_params['fromBlock']} to {filter_params['toBlock']}")
+    except Exception as e:
+        logger.error(f"Error retrieving logs: {e}")
+        logs = []
     return logs
 
 if config.from_block is None:
@@ -121,6 +133,8 @@ for step in np.arange(fromblock, to_block, REQ_SIZE):
                 work[field] = decoded_log['args'][field]
             
             output_list.append(work)
+
+logger.info(f"Finished processing logs. Total events found: {len(output_list)}")
 
 # output dataframe out of the list of events stored as dicts
 output = pd.DataFrame(output_list)
