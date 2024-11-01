@@ -23,13 +23,21 @@ class StreamToLogger:
     def flush(self):
         pass
 
-def setup_logging():
-    os.makedirs('./logs', exist_ok=True)
-    current_time = datetime.now().strftime("%Y%m%d_%H%M")
+def setup_logging(main=False):
+    if main:
+        current_time = datetime.now().strftime("%Y%m%d_%H%M")
+        log_dir = f'./logs/{current_time}'
+        os.makedirs(log_dir, exist_ok=True)
+        log_file = f'{log_dir}/main_log.log'
+    else:
+        os.makedirs('./logs', exist_ok=True)
+        current_time = datetime.now().strftime("%Y%m%d_%H%M")
+        log_file = f'./logs/job_{current_time}.log'
+
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s:%(levelname)s:%(name)s:%(message)s',
-        filename=f'./logs/job_{current_time}.log',
+        filename=log_file,
         filemode='a'
     )
     # Capture original stdout and stderr
