@@ -63,7 +63,7 @@ config = parse_arguments()
 # Set up logging
 setup_logging(main=False, log_file_path=config.log_file_path)
 logger = logging.getLogger()
-logger.info(f"Started event tracking for contract: {config.contract_name}, event: {config.event_name}")
+logger.info(f"Started event tracking for contract: {config.contract_name}, event: {config.event_name}, address: {config.contract_address}, block range: {config.from_block} to {config.to_block}")
 
 w3 = Web3(
     Web3.HTTPProvider(
@@ -135,7 +135,7 @@ for step in np.arange(fromblock, to_block, REQ_SIZE):
             
             output_list.append(work)
 
-logger.info(f"Finished processing logs. Total events found: {len(output_list)}")
+logger.info(f"Finished processing logs for address: {config.contract_address}, block range: {config.from_block} to {config.to_block}. Total events found: {len(output_list)}")
 
 # output dataframe out of the list of events stored as dicts
 output = pd.DataFrame(output_list)
