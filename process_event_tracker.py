@@ -110,6 +110,7 @@ if config.append and os.path.exists(output_file):
     existing_df = existing_table.to_pandas()
     last_block_number = existing_df['blockNumber'].astype(int).max()
     fromblock = last_block_number + 1
+    del existing_df
 
 # list to save all output dicts
 output_list = []
@@ -138,8 +139,11 @@ for step in np.arange(fromblock, to_block, REQ_SIZE):
 
 logger.info(f"Finished processing logs for address: {config.contract_address}, block range: {config.from_block} to {config.to_block}. Total events found: {len(output_list)}")
 
+# create the columns, so that if output_list is empty the dataframe has the right header
+columns = ['blockNumber'] + event['fields']
+logger.info(f"Output Dataframe columns: {columns}")
 # output dataframe out of the list of events stored as dicts
-output = pd.DataFrame(output_list)
+output = pd.DataFrame(output_list, columns=columns)
 # Write the DataFrame to the output file at the end
 if os.path.exists(output_file):
     existing_table = pq.read_table(output_file)

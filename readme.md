@@ -49,3 +49,17 @@ python parallel_event_tracker.py -contract-name stETH --contract-address 0xae7ab
 The output is saved in the folder `./output`, in a collection of `.parquet` files following the naming convention `{OUTPUT}/{config.contract_name}-{config.event_name}-{step}-{toblock}.parquet`. A parquet file is created every 500,000 blocks in the range given when running the script.
 
 Logs are created in `./logs`.
+
+
+# Experiments
+
+## Transfer
+## TransferShares
+stETH contract
+```
+python parallel_event_tracker.py --contract-name stETH --contract-address 0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84 --event-name TransferShares --from-block 11000000
+```
+## TokenRebased
+```
+python parallel_event_tracker.py --contract-name stETH --contract-address 0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84 --event-name TokenRebased --from-block 11000000
+```
