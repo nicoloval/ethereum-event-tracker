@@ -4,7 +4,7 @@ It is meant to run as a process cmd managed by the script parallel_event_tracker
 """
 import argparse
 from web3 import Web3
-import os
+import os, logger, logging
 import log_decoder
 import log_filters
 from dotenv import load_dotenv
@@ -14,6 +14,9 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import numpy as np
 from parse_solidity_event import parse_solidity_event
+
+logger.setup_logging()
+logger = logging.getLogger()
 
 load_dotenv('.env')
 
@@ -122,16 +125,15 @@ for step in np.arange(fromblock, recent_block, REQ_SIZE):
             
             output_list.append(work)
 
-    # output dataframe out of the list of events stored as dicts
-    output = pd.DataFrame(output_list)
-    # Write the DataFrame to the output file at the end
-    if os.path.exists(output_file):
-        existing_table = pq.read_table(output_file)
-        existing_df = existing_table.to_pandas()
-        output = pd.concat([existing_df, output], ignore_index=True)
+# output dataframe out of the list of events stored as dicts
+output = pd.DataFrame(output_list)
+# Write the DataFrame to the output file at the end
+if os.path.exists(output_file):
+    existing_table = pq.read_table(output_file)
+    existing_df = existing_table.to_pandas()
+    output = pd.concat([existing_df, output], ignore_index=True)
 
-    # Convert columns to string to avoid errors from numbers larger than max
-    output = output.astype(str)
-    table = pa.Table.from_pandas(output)
-    pq.write_table(table, output_file)
-
+# Convert columns to string to avoid errors from numbers larger than max
+output = output.astype(str)
+table = pa.Table.from_pandas(output)
+pq.write_table(table, output_file)
