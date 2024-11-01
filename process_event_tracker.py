@@ -15,18 +15,15 @@ import pyarrow.parquet as pq
 import numpy as np
 from parse_solidity_event import parse_solidity_event
 
-logger.setup_logging()
-logger = logging.getLogger()
-
 load_dotenv('.env')
 
 class EventTrackerConfig:
-    def __init__(self, contract_name, contract_address, event_name, from_block, recent_block, append):
+    def __init__(self, contract_name, contract_address, event_name, from_block, to_block, append):
         self.contract_name = contract_name
         self.contract_address = contract_address
         self.event_name = event_name
         self.from_block = from_block
-        self.recent_block = recent_block
+        self.to_block = to_block
         self.append = append
         # Configure the paths to the files from user information
         self.contract_abi_path = f"{ABI}/{self.contract_name}.json"
@@ -38,7 +35,7 @@ def parse_arguments():
     parser.add_argument('-a', '--contract-address', type=str, required=True, help='Contract address')
     parser.add_argument('-e', '--event-name', type=str, required=True, help='Event name')
     parser.add_argument('-f', '--from-block', type=int, default=None, help='Starting block number (optional)')
-    parser.add_argument('-r', '--recent-block', type=int, default=None, help='Stopping block number (optional)')
+    parser.add_argument('-t', '--to-block', type=int, default=None, help='Stopping block number (optional)')
     parser.add_argument('-p', '--append', action="store_true", help='Append to existing output (optional)')
 
     args = parser.parse_args()
@@ -48,7 +45,7 @@ def parse_arguments():
         args.contract_address,
         args.event_name,
         args.from_block,
-        args.recent_block,
+        args.to_block,
         args.append
     )
 
@@ -78,10 +75,10 @@ else:
     pass
     fromblock = config.from_block
 
-if config.recent_block is None:
-    recent_block = w3.eth.block_number
+if config.to_block is None:
+    to_block = w3.eth.block_number
 else:
-    recent_block = config.recent_block
+    to_block = config.to_block
 
 f = open(config.contract_abi_path)
 contract_abi = json.load(f)
@@ -92,7 +89,7 @@ event = parse_solidity_event(config.event_solidity_path)
 
 # output = pd.DataFrame(columns=['blockNumber'] + event['fields'])
 
-output_file = f"{OUTPUT}/{config.contract_name}-{config.event_name}-{fromblock}-{recent_block}.parquet"
+output_file = f"{OUTPUT}/{config.contract_name}-{config.event_name}-{fromblock}-{to_block}.parquet"
 
 if config.append and os.path.exists(output_file):
     existing_table = pq.read_table(output_file)
@@ -103,8 +100,8 @@ if config.append and os.path.exists(output_file):
 # list to save all output dicts
 output_list = []
 
-for step in np.arange(fromblock, recent_block, REQ_SIZE):
-    toblock = min(step + REQ_SIZE, recent_block)
+for step in np.arange(fromblock, to_block, REQ_SIZE):
+    toblock = min(step + REQ_SIZE, to_block)
     args = {
         'fromBlock': step,
         'toBlock': toblock,
