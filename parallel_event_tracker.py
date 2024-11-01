@@ -1,6 +1,7 @@
 import subprocess
 import os
 from web3 import Web3
+from tqdm import tqdm
 import argparse
 from dotenv import load_dotenv
 from logger import setup_logging, logging
@@ -50,7 +51,7 @@ first_batch_end = ((start_block // BLOCK_RANGE_SIZE) + 1) * BLOCK_RANGE_SIZE if 
 
 # Launch subprocesses for each block range
 processes = []
-for current_start_block in range(start_block, end_block, BLOCK_RANGE_SIZE):
+for current_start_block in tqdm(range(start_block, end_block, BLOCK_RANGE_SIZE), desc="Processing blocks"):
     if current_start_block == start_block and start_block % BLOCK_RANGE_SIZE != 0:
         current_end_block = min(first_batch_end, end_block)
     else:
