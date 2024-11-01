@@ -1,9 +1,9 @@
-emit TokenRebased(
-_reportedData.reportTimestamp,
-_reportedData.timeElapsed,
-_reportContext.preTotalShares,
-_reportContext.preTotalPooledEther,
-postTotalShares,
-postTotalPooledEther,
-_reportContext.sharesMintedAsFees
+event TokenRebased(
+uint256 indexed reportTimestamp,
+uint256 timeElapsed,
+uint256 preTotalShares,
+uint256 preTotalEther,
+uint256 postTotalShares,
+uint256 postTotalEther,
+uint256 sharesMintedAsFees
 );

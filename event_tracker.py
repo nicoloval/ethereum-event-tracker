@@ -15,8 +15,13 @@ import numpy as np
 from parse_solidity_event import parse_solidity_event
 from tqdm import tqdm
 import sys
+from datetime import datetime
 
-logger.setup_logging()
+
+current_time = datetime.now().strftime("%Y%m%d_%H%M")
+log_dir = f'./logs/{current_time}'
+log_path = f'{log_dir}/job_main.log'
+logger.setup_logging(log_file_path=None)
 logger = logging.getLogger()
 
 load_dotenv('.env')
