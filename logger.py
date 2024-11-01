@@ -29,6 +29,7 @@ def setup_logging(main=False):
         log_dir = f'./logs/{current_time}'
         os.makedirs(log_dir, exist_ok=True)
         log_file = f'{log_dir}/main_log.log'
+        return log_dir
     else:
         os.makedirs('./logs', exist_ok=True)
         current_time = datetime.now().strftime("%Y%m%d_%H%M")
