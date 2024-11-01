@@ -23,18 +23,11 @@ class StreamToLogger:
     def flush(self):
         pass
 
-def setup_logging(main=False, log_file_path=None):
-    if main:
-        current_time = datetime.now().strftime("%Y%m%d_%H%M")
-        log_dir = f'./logs/{current_time}'
-        os.makedirs(log_dir, exist_ok=True)
-        log_file = f'{log_dir}/main_log.log'
-        return log_dir
-    else:
-        if log_file_path is None:
-            raise ValueError("log_file_path must be provided when main is False")
-        os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
-        log_file = log_file_path
+def setup_logging(log_file_path=None):
+    if log_file_path is None:
+        raise ValueError("log_file_path must be provided")
+    os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
+    log_file = log_file_path
 
     logging.basicConfig(
         level=logging.INFO,

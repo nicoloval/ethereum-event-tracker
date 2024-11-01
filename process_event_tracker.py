@@ -19,14 +19,14 @@ from parse_solidity_event import parse_solidity_event
 load_dotenv('.env')
 
 class EventTrackerConfig:
-    def __init__(self, contract_name, contract_address, event_name, from_block, to_block, append):
+    def __init__(self, contract_name, contract_address, event_name, from_block, to_block, append, log_file):
         self.contract_name = contract_name
         self.contract_address = contract_address
         self.event_name = event_name
         self.from_block = from_block
         self.to_block = to_block
         self.append = append
-        self.log_file_path = args.log_file
+        self.log_file_path = log_file
         # Configure the paths to the files from user information
         self.contract_abi_path = f"{ABI}/{self.contract_name}.json"
         self.event_solidity_path = f"{EVENT}/{self.contract_name}-{self.event_name}.sol"
@@ -49,7 +49,8 @@ def parse_arguments():
         args.event_name,
         args.from_block,
         args.to_block,
-        args.append
+        args.append,
+        args.log_file
     )
 
 # TK optimal 10000, alchemy is 2k
@@ -61,7 +62,7 @@ EVENT = os.getenv('EVENT')
 config = parse_arguments()
 
 # Set up logging
-setup_logging(main=False, log_file_path=config.log_file_path)
+setup_logging(log_file_path=config.log_file_path)
 logger = logging.getLogger()
 logger.info(f"Started event tracking for contract: {config.contract_name}, event: {config.event_name}, address: {config.contract_address}, block range: {config.from_block} to {config.to_block}")
 

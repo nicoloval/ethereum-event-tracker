@@ -6,8 +6,12 @@ import argparse
 from dotenv import load_dotenv
 from logger import setup_logging, logging
 import time
+from datetime import datetime
 
-log_dir = setup_logging(main=True)
+current_time = datetime.now().strftime("%Y%m%d_%H%M")
+log_dir = f'./logs/{current_time}'
+log_path = f'{log_dir}/job_main.log'
+setup_logging(log_file_path=log_path)
 logger = logging.getLogger()
 
 load_dotenv('.env')
@@ -54,8 +58,6 @@ first_batch_end = ((start_block // BLOCK_RANGE_SIZE) + 1) * BLOCK_RANGE_SIZE if 
 processes = []
 active_processes = []
 
-# Initialize process identifier
-process_id = 0
 
 for current_start_block in tqdm(range(start_block, end_block, BLOCK_RANGE_SIZE), desc="Processing blocks"):
     # Calculate current end block
@@ -74,7 +76,7 @@ for current_start_block in tqdm(range(start_block, end_block, BLOCK_RANGE_SIZE),
         '-t', str(current_end_block)
     ]
     # Add log file argument
-    log_file = f"{log_dir}/job_{process_id}.log"
+    log_file = f"{log_dir}/job_from_{current_start_block}_to_{current_end_block}.log"
     cmd.extend(['--log-file', log_file])
 
     if args.append:    
@@ -93,8 +95,6 @@ for current_start_block in tqdm(range(start_block, end_block, BLOCK_RANGE_SIZE),
     active_processes.append(process)
     processes.append(process)
 
-    # Increment process identifier
-    process_id += 1
 while active_processes:
     for proc in active_processes[:]:  # Create a copy to iterate over
         if proc.poll() is not None:
