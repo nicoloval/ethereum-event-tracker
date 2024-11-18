@@ -154,3 +154,4 @@ if os.path.exists(output_file):
 output = output.astype(str)
 table = pa.Table.from_pandas(output)
 pq.write_table(table, output_file)
+logger.info(f"Dumpted logs to file {output_file}")
