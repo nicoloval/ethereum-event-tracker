@@ -38,7 +38,7 @@ python parallel_event_tracker.py -contract-name stETH --contract-address 0xae7ab
     - contract address is the address of the contract. In the example is stETH token contract address.
 - additional arguments can be passed to limit the range of blocks to search. Default behaviour is from block 0 to last block in the node.
     ```
-    python event_tracker.py --contract-name stETH --contract-address 0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84 --event-name Transfer --from-block 18006105 --to-block 18006110
+    python parallel_event_tracker.py --contract-name stETH --contract-address 0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84 --event-name Transfer --from-block 18006105 --to-block 18006110
     ```
 - an additional boolean option `--append` can be set to force the script to append to an existing output file. The script will automatically start from the last block recorded on the output.
 - you can also define the number of cores to use with the option `--cores`
