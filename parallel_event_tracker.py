@@ -66,7 +66,7 @@ for current_start_block in tqdm(range(start_block, end_block, BLOCK_RANGE_SIZE),
     else:
         current_end_block = min(current_start_block + BLOCK_RANGE_SIZE, end_block)
 
-    # Prepare command
+    logger.info(f"Processing block range: current_start_block={current_start_block}, current_end_block={current_end_block}")
     cmd = [
         'python', 'process_event_tracker.py',
         '-n', args.contract_name,
