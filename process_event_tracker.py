@@ -152,6 +152,7 @@ if os.path.exists(output_file):
 
 # Convert columns to string to avoid errors from numbers larger than max
 output = output.astype(str)
+output['blockNumber'] = output['blockNumber'].astype(int)
 table = pa.Table.from_pandas(output)
 pq.write_table(table, output_file)
-logger.info(f"Dumpted logs to file {output_file}")
+logger.info(f"Dumped logs to file {output_file}")
