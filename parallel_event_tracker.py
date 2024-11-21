@@ -54,7 +54,7 @@ end_block = args.to_block if args.to_block is not None else latest_block
 # Adjust the first batch if start_block is not a multiple of BLOCK_RANGE_SIZE
 first_batch_end = ((start_block // BLOCK_RANGE_SIZE) + 1) * BLOCK_RANGE_SIZE if start_block % BLOCK_RANGE_SIZE != 0 else start_block + BLOCK_RANGE_SIZE
 
-# Launch subprocesses for each block range
+logger.info(f"Starting block processing from start_block={start_block} to end_block={end_block}")
 processes = []
 active_processes = []
 
