@@ -75,7 +75,7 @@ for current_start_block in tqdm(range(start_block, end_block, BLOCK_RANGE_SIZE),
         '-f', str(current_start_block),
         '-t', str(current_end_block)
     ]
-    # Add log file argument
+    logger.info(f"Prepared command: {' '.join(cmd)}")
     log_file = f"{log_dir}/job_from_{current_start_block}_to_{current_end_block}.log"
     cmd.extend(['--log-file', log_file])
 
