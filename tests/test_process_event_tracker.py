@@ -4,23 +4,55 @@ from process_event_tracker import EventTrackerConfig, get_logs_try
 from web3 import Web3
 
 class TestEventTrackerConfig(unittest.TestCase):
-    def test_event_tracker_config_initialization(self):
+    @patch('process_event_tracker.pq')
+    @patch('process_event_tracker.pd')
+    def test_event_tracker_config_initialization(self, mock_pd, mock_pq):
+        # Mocking the read_table and to_pandas methods
+        mock_pq.read_table.return_value.to_pandas.return_value = pd.DataFrame({
+            'blockNumber': [20000001, 20000002],
+            'field1': ['value1', 'value2'],
+            'field2': ['value3', 'value4']
+        })
+
         config = EventTrackerConfig(
-            contract_name="TestContract",
-            contract_address="0x1234567890abcdef1234567890abcdef12345678",
-            event_name="TestEvent",
-            from_block=0,
-            to_block=100,
+            contract_name="stETH",
+            contract_address="0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
+            event_name="TransferShares",
+            from_block=20000000,
+            to_block=20001000,
             append=False,
             log_file="test.log"
         )
-        self.assertEqual(config.contract_name, "TestContract")
-        self.assertEqual(config.contract_address, "0x1234567890abcdef1234567890abcdef12345678")
-        self.assertEqual(config.event_name, "TestEvent")
-        self.assertEqual(config.from_block, 0)
-        self.assertEqual(config.to_block, 100)
+        self.assertEqual(config.contract_name, "stETH")
+        self.assertEqual(config.contract_address, "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84")
+        self.assertEqual(config.event_name, "TransferShares")
+        self.assertEqual(config.from_block, 20000000)
+        self.assertEqual(config.to_block, 20001000)
         self.assertEqual(config.append, False)
         self.assertEqual(config.log_file_path, "test.log")
+
+        # Assuming the output file is named as follows
+        output_file = f"{config.contract_name}-{config.event_name}-{config.from_block}-{config.to_block}.parquet"
+        
+        # Mocking the output DataFrame
+        output_df = pd.DataFrame({
+            'blockNumber': [20000001, 20000002],
+            'field1': ['value1', 'value2'],
+            'field2': ['value3', 'value4']
+        })
+
+        # Mocking the comparison with sample.parquet
+        sample_df = pd.DataFrame({
+            'blockNumber': [20000001, 20000002],
+            'field1': ['value1', 'value2'],
+            'field2': ['value3', 'value4']
+        })
+
+        # Mocking the read_table method to return the sample DataFrame
+        mock_pq.read_table.return_value.to_pandas.return_value = sample_df
+
+        # Compare the output DataFrame with the sample DataFrame
+        pd.testing.assert_frame_equal(output_df, sample_df)
 
 class TestGetLogsTry(unittest.TestCase):
     @patch('process_event_tracker.logging')
