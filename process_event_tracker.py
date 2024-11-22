@@ -134,7 +134,10 @@ for step in np.arange(fromblock, to_block, REQ_SIZE):
 
         for log in logs:
             decoded_log = log_decoder.decode_log(log, event_abi_map, contract)
-            work = {'blockNumber': decoded_log['blockNumber']}
+            work = {
+                'blockNumber': decoded_log['blockNumber'],
+                'transactionHash': decoded_log['transactionHash']
+                }
             for field in event['fields']:
                 work[field] = decoded_log['args'][field]
             
@@ -143,7 +146,7 @@ for step in np.arange(fromblock, to_block, REQ_SIZE):
 logger.info(f"Finished processing logs for address: {config.contract_address}, block range: {config.from_block} to {config.to_block}. Total events found: {len(output_list)}")
 
 # create the columns, so that if output_list is empty the dataframe has the right header
-columns = ['blockNumber'] + event['fields']
+columns = ['blockNumber', 'transactionHash'] + event['fields']
 logger.info(f"Output Dataframe columns: {columns}")
 # output dataframe out of the list of events stored as dicts
 output = pd.DataFrame(output_list, columns=columns)
@@ -154,7 +157,8 @@ if os.path.exists(output_file):
     output = pd.concat([existing_df, output], ignore_index=True)
 
 # Convert columns to string to avoid errors from numbers larger than max
-output = output.astype(str)
+for c in event['fields']:
+    output[c] = output[c].astype(str)
 output['blockNumber'] = output['blockNumber'].astype(int)
 table = pa.Table.from_pandas(output)
 pq.write_table(table, output_file)
