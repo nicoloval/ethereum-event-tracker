@@ -19,7 +19,8 @@ from parse_solidity_event import parse_solidity_event
 load_dotenv('.env')
 
 class EventTrackerConfig:
-    def __init__(self, contract_name, contract_address, event_name, from_block, to_block, append, log_file):
+    def __init__(self, contract_name, contract_address, event_name, from_block, to_block, append, log_file, output):
+        self.output = output
         self.contract_name = contract_name
         self.contract_address = contract_address
         self.event_name = event_name
@@ -51,7 +52,8 @@ def parse_arguments():
         args.from_block,
         args.to_block,
         args.append,
-        args.log_file
+        args.log_file,
+        args.output
     )
 
 # TK optimal 10000, alchemy is 2k
