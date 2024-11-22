@@ -40,6 +40,7 @@ def parse_arguments():
     parser.add_argument('-t', '--to-block', type=int, default=None, help='Stopping block number (optional)')
     parser.add_argument('-p', '--append', action="store_true", help='Append to existing output (optional)')
     parser.add_argument('-l', '--log-file', type=str, required=True, help='Path to the log file')
+    parser.add_argument('-o', '--output', type=str, help='Output file path (optional)')
 
     args = parser.parse_args()
     
