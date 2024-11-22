@@ -106,7 +106,7 @@ event = parse_solidity_event(config.event_solidity_path)
 
 # output = pd.DataFrame(columns=['blockNumber'] + event['fields'])
 
-output_file = f"{OUTPUT}/{config.contract_name}-{config.event_name}-{fromblock}-{to_block}.parquet"
+output_file = config.output if config.output else f"{OUTPUT}/{config.contract_name}-{config.event_name}-{fromblock}-{to_block}.parquet"
 
 if config.append and os.path.exists(output_file):
     existing_table = pq.read_table(output_file)
