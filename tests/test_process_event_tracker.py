@@ -32,7 +32,7 @@ with patch.dict('sys.modules', {
     'sample.log_filters': MagicMock(make_filter=MagicMock()),
     'sample.parse_solidity_event': MagicMock(parse_solidity_event=MagicMock(return_value={'event_name': 'TestEvent', 'fields': ['field1', 'field2'], 'types': ['uint256', 'address']}))
 }):
-    with patch('builtins.open', unittest.mock.mock_open(read_data='[]')):
+    with patch('builtins.open', unittest.mock.mock_open(read_data='[{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"pure","type":"function"}]')):
         from sample.process_event_tracker import main
 
 class TestProcessEventTracker(unittest.TestCase):
