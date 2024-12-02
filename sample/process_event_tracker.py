@@ -21,9 +21,9 @@ REQ_SIZE = 2000
 class EventTrackerConfig:
     def __init__(self, contract_file, contract_address, event_file, from_block, to_block, append, log_file, output_file, rpc):
         self.output_file = output_file
-        self.contract_file = contract_file
+        self.contract_abi_path = contract_file
         self.contract_address = contract_address
-        self.event_file = event_file
+        self.event_solidity_path = event_file
         self.from_block = from_block
         self.to_block = to_block
         self.append = append
