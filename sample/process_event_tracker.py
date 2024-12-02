@@ -57,8 +57,6 @@ def parse_arguments():
     )
 
 def main():
-    OUTPUT = os.getenv('OUTPUT')
-
     config = parse_arguments()
 
     # Set up logging
