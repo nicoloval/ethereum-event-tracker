@@ -1,5 +1,6 @@
 import unittest
 import subprocess
+import os
 
 class TestProcessEventTracker(unittest.TestCase):
 
@@ -23,6 +24,12 @@ class TestProcessEventTracker(unittest.TestCase):
 
         # Check if the process ran successfully
         self.assertEqual(result.returncode, 0, f"Process failed with return code {result.returncode}. Output: {result.stdout}, Error: {result.stderr}")
+
+        # Clean up the output files
+        if os.path.exists('output.parquet'):
+            os.remove('output.parquet')
+        if os.path.exists('./log.txt'):
+            os.remove('./log.txt')
 
 if __name__ == "__main__":
     unittest.main()
