@@ -38,13 +38,13 @@ class TestProcessEventTracker(unittest.TestCase):
     @patch('argparse.ArgumentParser.parse_args', return_value=argparse.Namespace(
         contract_file='./stETH.json',
         contract_address='0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
-        event_file='stETH-Transfer.sol',
+        event_file='./stETH-Transfer.sol',
         from_block=12000000,
         to_block=12000010,
         append=False,
         log_file='log.txt',
         output_file='output.parquet',
-        rpc='http://localhost:8545'
+        rpc='http://localhost:8547'
     ))
     def test_main(self, mock_args):
         # Run the main function
