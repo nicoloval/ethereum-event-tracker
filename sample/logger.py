@@ -1,6 +1,7 @@
 import logging
 import os, sys
 from datetime import datetime
+
 class StreamToLogger:
     """
     Fake file-like stream object that redirects writes to a logger instance, while also printing to console.
