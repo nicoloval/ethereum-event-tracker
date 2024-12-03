@@ -18,8 +18,8 @@ def parse_arguments():
     parser.add_argument('-c', '--cores', type=int, default=4, help='Number of cores to allocate to subprocesses (optional)')
     parser.add_argument('-r', "--rpc", type=str, required=True, help="the rpc connection")
     parser.add_argument('-l', '--log-dir', type=str, default=None, help='Path to the log file')
-    parser.add_argument('-l', '--output-dir', type=str, required=True, help='The directory where to store the output')
-    parser.add_argument('-l', '--output-prefix', type=str, default=None, help='the prefix the output files will use')
+    parser.add_argument('-o', '--output-dir', type=str, required=True, help='The directory where to store the output')
+    parser.add_argument('-x', '--output-prefix', type=str, default=None, help='the prefix the output files will use')
 
     return parser.parse_args()
 

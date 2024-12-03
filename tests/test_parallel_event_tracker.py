@@ -13,7 +13,6 @@ class TestParallelEventTracker(unittest.TestCase):
             '-e', 'tests/stETH-Transfer.sol',
             '-f', '12000000',
             '-t', '12000010',
-            '-p',  # Append flag
             '-c', '2',  # Number of cores
             '-r', 'http://localhost:8547',
             '-l', './logs',
