@@ -78,7 +78,7 @@ def main():
         ]
         log_file = f"{log_dir}/job_from_{current_start_block}_to_{current_end_block}.log"
         cmd.extend(['--log-file', log_file])
-        cmd.extend(['--output-file', f'{args.output_dir}/{args.output-prefix}-{args.from_block}-{args.to_block}.parquet'])
+        cmd.extend(['--output-file', f'{args.output_dir}/{args.output_prefix}-{args.from_block}-{args.to_block}.parquet'])
         if args.append:    
             cmd.append('-p')
         #TODO: 
