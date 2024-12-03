@@ -51,6 +51,29 @@ The output is saved in the folder `./output`, in a collection of `.parquet` file
 Logs are created in `./logs`.
 
 
+# Testing
+
+The project includes a suite of tests to ensure the functionality of the event tracking scripts. The tests are located in the `tests` directory and are designed to verify the correct operation of the event tracking process.
+
+## Running Tests
+
+To run the tests, you can use a testing framework like `unittest`. Ensure that your environment is set up correctly and that the necessary dependencies are installed.
+
+Example command to run the tests:
+```
+python -m unittest discover tests
+```
+
+## Environment Configuration for Tests
+
+The tests require a `.env` file in the `tests` directory to configure the RPC URL. This file should contain the following line:
+
+```
+RPC_URL=http://localhost:8547
+```
+
+This configuration allows the test scripts to connect to a local Ethereum node running on port 8547.
+
 # Experiments
 
 ## Transfer
