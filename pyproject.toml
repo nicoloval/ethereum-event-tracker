@@ -19,7 +19,7 @@ dependencies = [
 ]
 
 [tool.setuptools]
-# Add setuptools configuration here if needed
+packages = ["sample"]
 
 [project.scripts]
 process_event_tracker = "sample.process_event_tracker:main"
