@@ -37,6 +37,7 @@ def main():
     log_path = f'{log_dir}/job_main.log'
     setup_logging(log_file_path=log_path)
     logger = logging.getLogger()
+    # check whether output dir exists
 
     # Define the block range size
     BLOCK_RANGE_SIZE = 500000
