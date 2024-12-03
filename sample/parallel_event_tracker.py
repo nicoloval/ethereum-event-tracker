@@ -3,109 +3,116 @@ import os
 from web3 import Web3
 from tqdm import tqdm
 import argparse
-from dotenv import load_dotenv
 from logger import setup_logging, logging
 import time
 from datetime import datetime
 
-current_time = datetime.now().strftime("%Y%m%d_%H%M")
-log_dir = f'./logs/{current_time}'
-log_path = f'{log_dir}/job_main.log'
-setup_logging(log_file_path=log_path)
-logger = logging.getLogger()
-
-load_dotenv('.env')
-
-# Load environment variables
-RPC_ENDPOINT = os.getenv('RPC_ENDPOINT')
-ABI = os.getenv('ABI')
-OUTPUT = os.getenv('OUTPUT')
-EVENT = os.getenv('EVENT')
-
-# Establish a Web3 connection
-w3 = Web3(Web3.HTTPProvider(RPC_ENDPOINT, request_kwargs={'timeout': 40}))
-logger.info(f'Chain connected?: {w3.is_connected()}')
-
-# Define the block range size
-BLOCK_RANGE_SIZE = 500000
-
-# Get the latest block number
-latest_block = w3.eth.block_number
-
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Parallel Event Tracker Configuration")
-    parser.add_argument('-n', '--contract-name', type=str, required=True, help='Contract name')
+    parser.add_argument('-n', '--contract-file', type=str, required=True, help='Contract ABI file path')
     parser.add_argument('-a', '--contract-address', type=str, required=True, help='Contract address')
-    parser.add_argument('-e', '--event-name', type=str, required=True, help='Event name')
+    parser.add_argument('-e', '--event-file', type=str, required=True, help='Event file path')
     parser.add_argument('-f', '--from-block', type=int, default=None, help='Starting block number (optional)')
     parser.add_argument('-t', '--to-block', type=int, default=None, help='Stopping block number (optional)')
     parser.add_argument('-p', '--append', action="store_true", help='Append to existing output (optional)')
     parser.add_argument('-c', '--cores', type=int, default=4, help='Number of cores to allocate to subprocesses (optional)')
+    parser.add_argument('-r', "--rpc", type=str, required=True, help="the rpc connection")
+    parser.add_argument('-l', '--log-dir', type=str, default=None, help='Path to the log file')
+    parser.add_argument('-l', '--output-dir', type=str, required=True, help='The directory where to store the output')
+    parser.add_argument('-l', '--output-prefix', type=str, default=None, help='the prefix the output files will use')
 
     return parser.parse_args()
 
-args = parse_arguments()
-logger.info(f"Arguments received: contract_name={args.contract_name}, contract_address={args.contract_address}, event_name={args.event_name}, from_block={args.from_block}, to_block={args.to_block}, append={args.append}, cores={args.cores}")
-
-# Determine the starting and ending blocks
-start_block = args.from_block if args.from_block is not None else 0
-end_block = args.to_block if args.to_block is not None else latest_block
-
-# Adjust the first batch if start_block is not a multiple of BLOCK_RANGE_SIZE
-first_batch_end = ((start_block // BLOCK_RANGE_SIZE) + 1) * BLOCK_RANGE_SIZE if start_block % BLOCK_RANGE_SIZE != 0 else start_block + BLOCK_RANGE_SIZE
-
-logger.info(f"Starting block processing from start_block={start_block} to end_block={end_block}")
-processes = []
-active_processes = []
-
-
-for current_start_block in tqdm(range(start_block, end_block, BLOCK_RANGE_SIZE), desc="Processing blocks"):
-    # Calculate current end block
-    if current_start_block == start_block and start_block % BLOCK_RANGE_SIZE != 0:
-        current_end_block = min(first_batch_end, end_block)
+def main():   
+    # parse args 
+    args = parse_arguments()
+    # set up log
+    current_time = datetime.now().strftime("%Y%m%d_%H%M")
+    if args.log_dir == None:
+        log_dir = f'./logs/{current_time}'
     else:
-        current_end_block = min(current_start_block + BLOCK_RANGE_SIZE, end_block)
+        log_dir = args.log_dir
+    log_path = f'{log_dir}/job_main.log'
+    setup_logging(log_file_path=log_path)
+    logger = logging.getLogger()
 
-    logger.info(f"Processing block range: current_start_block={current_start_block}, current_end_block={current_end_block}")
-    cmd = [
-        'python', 'process_event_tracker.py',
-        '-n', args.contract_name,
-        '-a', args.contract_address,
-        '-e', args.event_name,
-        '-f', str(current_start_block),
-        '-t', str(current_end_block)
-    ]
-    logger.info(f"Prepared command: {' '.join(cmd)}")
-    log_file = f"{log_dir}/job_from_{current_start_block}_to_{current_end_block}.log"
-    cmd.extend(['--log-file', log_file])
+    # Define the block range size
+    BLOCK_RANGE_SIZE = 500000
 
-    if args.append:    
-        cmd.append('-p')
+    # Establish a Web3 connection
+    w3 = Web3(Web3.HTTPProvider(args.rpc, request_kwargs={'timeout': 40}))
+    logger.info(f'Chain connected?: {w3.is_connected()}')
+    # Get the latest block number
+    latest_block = w3.eth.block_number
 
-    # Wait if we've reached the core limit
-    while len(active_processes) >= args.cores:
-        # Check all active processes
+    logger.info(f"Arguments received: contract_name={args.contract_name}, contract_address={args.contract_address}, event_name={args.event_name}, from_block={args.from_block}, to_block={args.to_block}, append={args.append}, cores={args.cores}")
+
+    # Determine the starting and ending blocks
+    start_block = args.from_block if args.from_block is not None else 0
+    end_block = args.to_block if args.to_block is not None else latest_block
+
+    # Adjust the first batch if start_block is not a multiple of BLOCK_RANGE_SIZE
+    first_batch_end = ((start_block // BLOCK_RANGE_SIZE) + 1) * BLOCK_RANGE_SIZE if start_block % BLOCK_RANGE_SIZE != 0 else start_block + BLOCK_RANGE_SIZE
+
+    logger.info(f"Starting block processing from start_block={start_block} to end_block={end_block}")
+    processes = []
+    active_processes = []
+
+
+    for current_start_block in tqdm(range(start_block, end_block, BLOCK_RANGE_SIZE), desc="Processing blocks"):
+        # Calculate current end block
+        if current_start_block == start_block and start_block % BLOCK_RANGE_SIZE != 0:
+            current_end_block = min(first_batch_end, end_block)
+        else:
+            current_end_block = min(current_start_block + BLOCK_RANGE_SIZE, end_block)
+
+        logger.info(f"Processing block range: current_start_block={current_start_block}, current_end_block={current_end_block}")
+        cmd = [
+            'python', 'process_event_tracker.py',
+            '-n', args.contract_file,
+            '-a', args.contract_address,
+            '-e', args.event_file,
+            '-f', str(current_start_block),
+            '-t', str(current_end_block),
+            '-r', args.rpc
+        ]
+        log_file = f"{log_dir}/job_from_{current_start_block}_to_{current_end_block}.log"
+        cmd.extend(['--log-file', log_file])
+        cmd.extend(['--output-file', f'{args.output_dir}/{args.output-prefix}-{args.from_block}-{args.to_block}.parquet'])
+        if args.append:    
+            cmd.append('-p')
+        #TODO: 
+
+        logger.info(f"Prepared command: {' '.join(cmd)}")
+
+
+        # Wait if we've reached the core limit
+        while len(active_processes) >= args.cores:
+            # Check all active processes
+            for proc in active_processes[:]:  # Create a copy to iterate over
+                if proc.poll() is not None:  # Process has finished
+                    active_processes.remove(proc)
+            time.sleep(0.1)  # Short sleep to prevent CPU spinning
+
+        # Start new process
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        active_processes.append(process)
+        processes.append(process)
+
+    while active_processes:
         for proc in active_processes[:]:  # Create a copy to iterate over
-            if proc.poll() is not None:  # Process has finished
+            if proc.poll() is not None:
                 active_processes.remove(proc)
-        time.sleep(0.1)  # Short sleep to prevent CPU spinning
+        time.sleep(0.1)
 
-    # Start new process
-    process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    active_processes.append(process)
-    processes.append(process)
+    # Check for any errors in the completed processes
+    for process in processes:
+        stdout, stderr = process.communicate()
+        if process.returncode != 0:
+            logger.info(f"Process failed with return code {process.returncode}")
+            logger.info(f"stderr: {stderr.decode()}")
 
-while active_processes:
-    for proc in active_processes[:]:  # Create a copy to iterate over
-        if proc.poll() is not None:
-            active_processes.remove(proc)
-    time.sleep(0.1)
+    logger.info("All event tracking processes have completed.")
 
-# Check for any errors in the completed processes
-for process in processes:
-    stdout, stderr = process.communicate()
-    if process.returncode != 0:
-        logger.info(f"Process failed with return code {process.returncode}")
-        logger.info(f"stderr: {stderr.decode()}")
-
-logger.info("All event tracking processes have completed.")
+if __name__ == "__main__":
+    main()

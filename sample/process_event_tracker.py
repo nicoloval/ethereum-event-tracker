@@ -10,10 +10,10 @@ import json
 import pyarrow as pa
 import pyarrow.parquet as pq
 import numpy as np
-from .logger import setup_logging, logging
-from .log_decoder import generate_event_abi_map, decode_log
-from .log_filters import make_filter
-from .parse_solidity_event import parse_solidity_event
+from logger import setup_logging, logging
+from log_decoder import generate_event_abi_map, decode_log
+from log_filters import make_filter
+from parse_solidity_event import parse_solidity_event
 
 # TK optimal 10000, alchemy is 2k
 REQ_SIZE = 2000
@@ -39,8 +39,8 @@ def parse_arguments():
     parser.add_argument('-t', '--to-block', type=int, default=None, help='Stopping block number (optional)')
     parser.add_argument('-p', '--append', action="store_true", help='Append to existing output (optional)')
     parser.add_argument('-l', '--log-file', type=str, required=True, help='Path to the log file')
-    parser.add_argument('-o', '--output-file', type=str, help='Output file path')
-    parser.add_argument('-r', "--rpc", type=str, help="the rpc connection")
+    parser.add_argument('-o', '--output-file', type=str, required=True, help='Output file path')
+    parser.add_argument('-r', "--rpc", type=str, required=True, help="the rpc connection")
 
     args = parser.parse_args()
     
