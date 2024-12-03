@@ -43,6 +43,11 @@ class TestParallelEventTracker(unittest.TestCase):
                 os.remove(os.path.join('./output', file))
             os.rmdir('./output')
 
+        if os.path.exists('./logs'):
+            for file in os.listdir('./logs'):
+                os.remove(os.path.join('./logs', file))
+            os.rmdir('./logs')
+
 
 if __name__ == "__main__":
     unittest.main()
