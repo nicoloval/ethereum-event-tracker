@@ -38,6 +38,8 @@ def main():
     setup_logging(log_file_path=log_path)
     logger = logging.getLogger()
     # check whether output dir exists
+    if not os.path.exists(args.output_dir):
+        os.makedirs(args.output_dir)
 
     # Define the block range size
     BLOCK_RANGE_SIZE = 500000
