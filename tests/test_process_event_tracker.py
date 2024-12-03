@@ -16,8 +16,8 @@ class TestProcessEventTracker(unittest.TestCase):
             '-n', 'tests/stETH.json',
             '-a', '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
             '-e', 'tests/stETH-Transfer.sol',
-            '-f', '14000000',
-            '-t', '14000010',
+            '-f', '17000000',
+            '-t', '17000100',
             '-l', './log.txt',
             '-o', 'output.parquet',
             '-r', os.getenv('RPC_URL')
