@@ -37,11 +37,12 @@ class TestParallelEventTracker(unittest.TestCase):
             import pyarrow.parquet as pq
             table = pq.read_table(output_file_path)
             num_events = table.num_rows
-            print(f"Number of events in the output file: {num_events}")
-        # if os.path.exists('./output'):
-        #     for file in os.listdir('./output'):
-        #         os.remove(os.path.join('./output', file))
-        #     os.rmdir('./output')
+            self.assertEqual(num_events, 17, f"Expected 17 events, but found {num_events}")
+        if os.path.exists('./output'):
+            for file in os.listdir('./output'):
+                os.remove(os.path.join('./output', file))
+            os.rmdir('./output')
+
 
 if __name__ == "__main__":
     unittest.main()
