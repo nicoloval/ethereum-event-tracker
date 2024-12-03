@@ -1,4 +1,9 @@
 import unittest
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv('tests/.env')
 import subprocess
 import os
 
@@ -15,7 +20,7 @@ class TestProcessEventTracker(unittest.TestCase):
             '-t', '14000010',
             '-l', './log.txt',
             '-o', 'output.parquet',
-            '-r', 'http://localhost:8547'
+            '-r', os.getenv('RPC_URL')
         ]
 
         # Run the command

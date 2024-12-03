@@ -1,4 +1,9 @@
 import unittest
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv('tests/.env')
 import subprocess
 import os
 
@@ -14,7 +19,7 @@ class TestParallelEventTracker(unittest.TestCase):
             '-f', '12000000',
             '-t', '12000010',
             '-c', '2',  # Number of cores
-            '-r', 'http://localhost:8547',
+            '-r', os.getenv('RPC_URL'),
             '-l', './logs',
             '-o', './output',
             '-x', 'test_output'

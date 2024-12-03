@@ -1,11 +1,15 @@
 import unittest
-from web3 import Web3
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv('tests/.env')
 
 class TestWeb3Connection(unittest.TestCase):
 
     def test_web3_connection(self):
         # Define the RPC URL
-        rpc_url = 'http://localhost:8547'
+        rpc_url = os.getenv('RPC_URL')
         
         # Establish a Web3 connection
         w3 = Web3(Web3.HTTPProvider(rpc_url, request_kwargs={'timeout': 40}))
