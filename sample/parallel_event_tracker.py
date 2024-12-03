@@ -45,7 +45,7 @@ def main():
     # Get the latest block number
     latest_block = w3.eth.block_number
 
-    logger.info(f"Arguments received: contract_name={args.contract_name}, contract_address={args.contract_address}, event_name={args.event_name}, from_block={args.from_block}, to_block={args.to_block}, append={args.append}, cores={args.cores}")
+    logger.info(f"Arguments received: contract_file={args.contract_file}, contract_address={args.contract_address}, event_file={args.event_file}, from_block={args.from_block}, to_block={args.to_block}, append={args.append}, cores={args.cores}, rpc={args.rpc}, log_dir={args.log_dir}, output_dir={args.output_dir}, output_prefix={args.output_prefix}")
 
     # Determine the starting and ending blocks
     start_block = args.from_block if args.from_block is not None else 0
