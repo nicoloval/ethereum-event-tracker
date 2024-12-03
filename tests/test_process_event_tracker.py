@@ -25,7 +25,13 @@ class TestProcessEventTracker(unittest.TestCase):
         # Check if the process ran successfully
         self.assertEqual(result.returncode, 0, f"Process failed with return code {result.returncode}. Output: {result.stdout}, Error: {result.stderr}")
 
-        # Clean up the output files
+        # Check if the output file exists and measure the number of events
+        output_file_path = 'output.parquet'
+        if os.path.exists(output_file_path):
+            import pyarrow.parquet as pq
+            table = pq.read_table(output_file_path)
+            num_events = table.num_rows
+            print(f"Number of events in the output file: {num_events}")
         if os.path.exists('output.parquet'):
             os.remove('output.parquet')
         if os.path.exists('./log.txt'):
