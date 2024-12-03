@@ -27,10 +27,10 @@ class TestParallelEventTracker(unittest.TestCase):
         self.assertEqual(result.returncode, 0, f"Process failed with return code {result.returncode}. Output: {result.stdout}, Error: {result.stderr}")
 
         # Clean up the output files
-        if os.path.exists('./output'):
-            for file in os.listdir('./output'):
-                os.remove(os.path.join('./output', file))
-            os.rmdir('./output')
+        # if os.path.exists('./output'):
+        #     for file in os.listdir('./output'):
+        #         os.remove(os.path.join('./output', file))
+        #     os.rmdir('./output')
 
 if __name__ == "__main__":
     unittest.main()
