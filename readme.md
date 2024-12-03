@@ -15,7 +15,7 @@ First, you need to prepare a JSON ABI contract and the Solidity formatted event.
 
 ### parallel_event_tracker.py
 
-This script is used to track events in parallel, dividing the work across multiple cores.
+This script is used to track events in parallel, dividing the work across multiple cores. The block range is split in files of 500000 blocks of length, and saved in the output directory, using an output prefix formatting the file titles: `<output-dir>/<output-prefix>-<from-block>-<to-block>.parquet`.
 
 #### Usage
 
