@@ -11,9 +11,8 @@ class TestProcessEventTracker(unittest.TestCase):
             '-n', 'tests/stETH.json',
             '-a', '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
             '-e', 'tests/stETH-Transfer.sol',
-            '-f', '12000000',
-            '-t', '12000010',
-            '-p',  # Append flag
+            '-f', '14000000',
+            '-t', '14000010',
             '-l', './log.txt',
             '-o', 'output.parquet',
             '-r', 'http://localhost:8547'
@@ -32,10 +31,11 @@ class TestProcessEventTracker(unittest.TestCase):
             table = pq.read_table(output_file_path)
             num_events = table.num_rows
             print(f"Number of events in the output file: {num_events}")
-        if os.path.exists('output.parquet'):
-            os.remove('output.parquet')
-        if os.path.exists('./log.txt'):
-            os.remove('./log.txt')
+
+        # if os.path.exists('output.parquet'):
+        #     os.remove('output.parquet')
+        # if os.path.exists('./log.txt'):
+        #     os.remove('./log.txt')
 
 if __name__ == "__main__":
     unittest.main()
