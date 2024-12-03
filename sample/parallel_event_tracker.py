@@ -1,5 +1,6 @@
 import subprocess
 import os
+import os
 from web3 import Web3
 from tqdm import tqdm
 import argparse
@@ -24,7 +25,8 @@ def parse_arguments():
     return parser.parse_args()
 
 def main():   
-    # parse args 
+    # Determine the directory of the current script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
     args = parse_arguments()
     # set up log
     current_time = datetime.now().strftime("%Y%m%d_%H%M")
@@ -68,7 +70,7 @@ def main():
 
         logger.info(f"Processing block range: current_start_block={current_start_block}, current_end_block={current_end_block}")
         cmd = [
-            'python', 'process_event_tracker.py',
+            'python', os.path.join(script_dir, 'process_event_tracker.py'),
             '-n', args.contract_file,
             '-a', args.contract_address,
             '-e', args.event_file,
