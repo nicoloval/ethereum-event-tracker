@@ -12,7 +12,7 @@ import pyarrow.parquet as pq
 import numpy as np
 from logger import setup_logging, logging
 from log_decoder import generate_event_abi_map, decode_log
-from log_filters import make_filter
+from log_filters import make_filter, retry_on_error
 from parse_solidity_event import parse_solidity_event
 
 # TK optimal 10000, alchemy is 2k
@@ -66,11 +66,13 @@ def main():
 
     w3 = Web3(
         Web3.HTTPProvider(
-            os.getenv('RPC_ENDPOINT'),
+            config.rpc,
             request_kwargs={'timeout': 40}
         )
     )
-    logger.info(f'Chain connected?: {w3.is_connected()}')
+    # Check if connected
+    if not w3.is_connected():
+        raise ConnectionError("Failed to connect to RPC Port")
 
     def get_logs_try(w3, filter_params):
         try:
@@ -112,10 +114,6 @@ def main():
 
     # list to save all output dicts
     output_list = []
-
-    print('fromblock', fromblock)
-    print('toblock', to_block)
-    print('reqsize', REQ_SIZE)
 
     for step in np.arange(fromblock, to_block, REQ_SIZE):
         toblock = min(step + REQ_SIZE, to_block)

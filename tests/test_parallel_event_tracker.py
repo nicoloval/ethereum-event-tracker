@@ -16,8 +16,8 @@ class TestParallelEventTracker(unittest.TestCase):
             '-n', 'tests/stETH.json',
             '-a', '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
             '-e', 'tests/stETH-Transfer.sol',
-            '-f', '12000000',
-            '-t', '12000010',
+            '-f', '17000000',
+            '-t', '17000100',
             '-c', '2',  # Number of cores
             '-r', os.getenv('RPC_URL'),
             '-l', './logs',
@@ -38,16 +38,17 @@ class TestParallelEventTracker(unittest.TestCase):
             table = pq.read_table(output_file_path)
             num_events = table.num_rows
             self.assertEqual(num_events, 17, f"Expected 17 events, but found {num_events}")
+        # cleaning
+        # remove the output
         if os.path.exists('./output'):
             for file in os.listdir('./output'):
                 os.remove(os.path.join('./output', file))
             os.rmdir('./output')
-
+        # remove the logs
         if os.path.exists('./logs'):
             for file in os.listdir('./logs'):
                 os.remove(os.path.join('./logs', file))
             os.rmdir('./logs')
-
 
 if __name__ == "__main__":
     unittest.main()

@@ -37,10 +37,10 @@ class TestProcessEventTracker(unittest.TestCase):
             num_events = table.num_rows
             self.assertEqual(num_events, 17, f"Expected 17 events, but found {num_events}")
 
-        # if os.path.exists('output.parquet'):
-        #     os.remove('output.parquet')
-        # if os.path.exists('./log.txt'):
-        #     os.remove('./log.txt')
+        if os.path.exists('output.parquet'):
+            os.remove('output.parquet')
+        if os.path.exists('./log.txt'):
+            os.remove('./log.txt')
 
 if __name__ == "__main__":
     unittest.main()
