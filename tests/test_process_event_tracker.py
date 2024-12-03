@@ -35,7 +35,7 @@ class TestProcessEventTracker(unittest.TestCase):
             import pyarrow.parquet as pq
             table = pq.read_table(output_file_path)
             num_events = table.num_rows
-            print(f"Number of events in the output file: {num_events}")
+            self.assertEqual(num_events, 17, f"Expected 17 events, but found {num_events}")
 
         # if os.path.exists('output.parquet'):
         #     os.remove('output.parquet')
