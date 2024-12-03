@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ethereum-event-tracker"
+version = "0.0.2"
+description = "A poject to track smart contract events"
+authors = [
+    { name = "Nicolo Vallarano", email = "nico.vallarano@gmail.com" }
+]
+license = { text = "MIT" }
+dependencies = [
+    "pandas",
+    "pyarrow",
+    "web3",
+    "tqdm",
+    "python-dotenv"
+]
+
+[tool.setuptools]
+# Add setuptools configuration here if needed
+
+[project.scripts]
+process_event_tracker = "sample.process_event_tracker:main"
+parallel_event_tracker = "sample.parallel_event_tracker:main"

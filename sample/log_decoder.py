@@ -1,6 +1,4 @@
-import ast
 from web3 import Web3
-import json
 
 
 # decode logs to get ipfs hash
