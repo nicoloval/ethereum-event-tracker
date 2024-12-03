@@ -91,6 +91,8 @@ def main():
     else:
         to_block = config.to_block
 
+    logger.info(f"Final block range: fromblock={fromblock}, toblock={to_block}")
+
     f = open(config.contract_abi_path)
     contract_abi = json.load(f)
     contract = w3.eth.contract(address=config.contract_address, abi=contract_abi)
