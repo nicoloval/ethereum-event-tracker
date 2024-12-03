@@ -62,7 +62,7 @@ def main():
     # Set up logging
     setup_logging(log_file_path=config.log_file_path)
     logger = logging.getLogger()
-    logger.info(f"Started event tracking for contract: {config.contract_abi_path}, event: {config.event_solidity_path}, address: {config.contract_address}, block range: {config.from_block} to {config.to_block}")
+    logger.info(f"Started event tracking with arguments: contract_file={config.contract_abi_path}, contract_address={config.contract_address}, event_file={config.event_solidity_path}, from_block={config.from_block}, to_block={config.to_block}, append={config.append}, log_file={config.log_file_path}, output_file={config.output_file}, rpc={config.rpc}")
 
     w3 = Web3(
         Web3.HTTPProvider(
