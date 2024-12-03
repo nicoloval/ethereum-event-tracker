@@ -84,7 +84,6 @@ def main():
     if config.from_block is None:
         fromblock = 0
     else:
-        pass
         fromblock = config.from_block
 
     if config.to_block is None:
@@ -111,6 +110,10 @@ def main():
 
     # list to save all output dicts
     output_list = []
+
+    print('fromblock', fromblock)
+    print('toblock', to_block)
+    print('reqsize', REQ_SIZE)
 
     for step in np.arange(fromblock, to_block, REQ_SIZE):
         toblock = min(step + REQ_SIZE, to_block)
