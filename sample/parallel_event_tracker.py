@@ -7,6 +7,7 @@ import argparse
 from .logger import setup_logging, logging
 import time
 from datetime import datetime
+from .log_filters import retry_on_error
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Parallel Event Tracker Configuration")
@@ -42,11 +43,11 @@ def main():
         os.makedirs(args.output_dir)
 
     # Define the block range size
-    BLOCK_RANGE_SIZE = 500000
+    BLOCK_RANGE_SIZE = 50000
 
     # Establish a Web3 connection
     w3 = Web3(Web3.HTTPProvider(args.rpc, request_kwargs={'timeout': 40}))
-    logger.info(f'Chain connected?: {w3.is_connected()}')
+    logger.info(f'Chain connected?: {retry_on_error(w3.is_connected())})')
     # Get the latest block number
     latest_block = w3.eth.block_number
 
@@ -83,13 +84,11 @@ def main():
         ]
         log_file = f"{log_dir}/job_from_{current_start_block}_to_{current_end_block}.log"
         cmd.extend(['--log-file', log_file])
-        cmd.extend(['--output-file', f'{args.output_dir}/{args.output_prefix}-{args.from_block}-{args.to_block}.parquet'])
+        cmd.extend(['--output-file', f'{args.output_dir}/{args.output_prefix}-{current_start_block}-{current_end_block}.parquet'])
         if args.append:    
             cmd.append('-p')
-        #TODO: 
 
         logger.info(f"Prepared command: {' '.join(cmd)}")
-
 
         # Wait if we've reached the core limit
         while len(active_processes) >= args.cores:

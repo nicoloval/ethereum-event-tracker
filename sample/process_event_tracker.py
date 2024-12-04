@@ -70,17 +70,23 @@ def main():
             request_kwargs={'timeout': 40}
         )
     )
-    # Check if connected
-    if not w3.is_connected():
-        raise ConnectionError("Failed to connect to RPC Port")
+    # # Check if connected
+    # if not w3.is_connected():
+    #     raise ConnectionError("Failed to connect to RPC Port")
 
+    # def get_logs_try(w3, filter_params):
+    #     try:
+    #         logs = w3.eth.get_logs(filter_params)
+    #         logger.info(f"Retrieved {len(logs)} logs from block {filter_params['fromBlock']} to {filter_params['toBlock']}")
+    #     except Exception as e:
+    #         logger.error(f"Error retrieving logs: {e}")
+    #         logs = []
+    #     return logs
+    
+    @retry_on_error()
     def get_logs_try(w3, filter_params):
-        try:
-            logs = w3.eth.get_logs(filter_params)
-            logger.info(f"Retrieved {len(logs)} logs from block {filter_params['fromBlock']} to {filter_params['toBlock']}")
-        except Exception as e:
-            logger.error(f"Error retrieving logs: {e}")
-            logs = []
+        logs = w3.eth.get_logs(filter_params)
+        logger.info(f"Retrieved {len(logs)} logs from block {filter_params['fromBlock']} to {filter_params['toBlock']}")
         return logs
 
     if config.from_block is None:
