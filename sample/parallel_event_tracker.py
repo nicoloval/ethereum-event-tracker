@@ -4,7 +4,7 @@ import os
 from web3 import Web3
 from tqdm import tqdm
 import argparse
-from logger import setup_logging, logging
+from .logger import setup_logging, logging
 import time
 from datetime import datetime
 
@@ -28,15 +28,15 @@ def main():
     # Determine the directory of the current script
     script_dir = os.path.dirname(os.path.abspath(__file__))
     args = parse_arguments()
+
     # set up log
+    os.makedirs(os.path.dirname(args.log_dir), exist_ok=True)
     current_time = datetime.now().strftime("%Y%m%d_%H%M")
-    if args.log_dir == None:
-        log_dir = f'./logs/{current_time}'
-    else:
-        log_dir = args.log_dir
+    log_dir = f'{args.log_dir}/logs-parallel-event-tracker_{current_time}'
     log_path = f'{log_dir}/job_main.log'
     setup_logging(log_file_path=log_path)
     logger = logging.getLogger()
+
     # check whether output dir exists
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)
