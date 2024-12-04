@@ -21,7 +21,7 @@ def parse_arguments():
     parser.add_argument('-r', "--rpc", type=str, required=True, help="the rpc connection")
     parser.add_argument('-l', '--log-dir', type=str, default=None, help='Path to the log file')
     parser.add_argument('-o', '--output-dir', type=str, required=True, help='The directory where to store the output')
-    parser.add_argument('-x', '--output-prefix', type=str, default=None, help='the prefix the output files will use')
+    parser.add_argument('-x', '--output-prefix', type=str, required=True, help='the prefix the output files will use')
 
     return parser.parse_args()
 
@@ -83,8 +83,8 @@ def main():
             '-r', args.rpc
         ]
         log_file = f"{log_dir}/job_from_{current_start_block}_to_{current_end_block}.log"
-        cmd.extend(['--log-file', log_file])
-        cmd.extend(['--output-file', f'{args.output_dir}/{args.output_prefix}-{current_start_block}-{current_end_block}.parquet'])
+        cmd.extend(['-l', log_file])
+        cmd.extend(['-o', f'{args.output_dir}/{args.output_prefix}-{current_start_block}-{current_end_block}.parquet'])
         if args.append:    
             cmd.append('-p')
 
